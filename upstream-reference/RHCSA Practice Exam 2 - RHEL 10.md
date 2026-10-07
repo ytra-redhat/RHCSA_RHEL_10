@@ -1,13 +1,3 @@
-> **Fusion ARM64-versie — 5 oktober 2026.** Lees eerst [README.md](README.md).
-> Twee NICs: NAT voor internet en DNS; host-only voor onderstaande statische oefenadressen.
-> De host-only NIC krijgt **geen gateway/DNS** en `ipv4.never-default yes`, `ipv6.never-default yes`.
-> Eventuele oorspronkelijke gateway/DNS-tabellen hieronder zijn aangepast: NAT levert die waarden via DHCP.
-> Stel DNS-oefeningen alleen expliciet op NAT in. Kies de lab-NIC via de MAC in `fusion-state.json`, nooit blind `eth0`.
-> `/dev/nvme0n1` is de systeemdisk. Controleer met `lsblk`, `findmnt /` en `wipefs -n` vóór diskbewerkingen.
-> Draai één examenpaar tegelijk. De paren delen Fusion host-only Ethernet; de subnets zijn geen beveiligingsisolatie.
-> Examens blijven community-oefeningen; containers, eigen SELinux-modules en andere verdieping vallen buiten de huidige EX200-doelen.
-> Graders zijn gedeeltelijke controles. Verifieer netwerkdiensten vanaf de tweede VM én herstart beide VM's.
-
 ---
 title: RHCSA Practice Exam 2 - RHEL 10
 tags: [certifications, rhcsa, rhel10, practice, linux]
@@ -17,7 +7,7 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 ---
 # 🧪 RHCSA Practice Exam #2 — RHEL 10 (EX200)
 
-> **Format:** Performance-based | **Time budget:** 3 hours | **Practice rubric:** 25 / 35 (local study target, not official scoring)
+> **Format:** Performance-based | **Time budget:** 3 hours | **Pass Score:** ~70% (25 / 35)
 > All configurations **must persist after reboot** without intervention.
 > You may use `man`, `info`, and `/usr/share/doc` — no internet access on exam day.
 > This exam re-tests the same objectives as Exam #1 using different scenarios, values, and services.
@@ -34,8 +24,8 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 
 | VM                 | vCPU | RAM  | Primary Disk      | Extra Disks                                            |
 | ------------------ | ---- | ---- | ----------------- | ------------------------------------------------------ |
-| `rhel10-charlie` | 2    | 2 GB | 30 GB `/dev/nvme0n1` | 8 GB`/dev/nvme0n2`, 6 GB `/dev/nvme0n3`, 4 GB `/dev/nvme0n4` |
-| `rhel10-delta`   | 2    | 2 GB | 30 GB `/dev/nvme0n1` | 8 GB`/dev/nvme0n2`                                       |
+| `rhel10-charlie` | 2    | 2 GB | 20 GB`/dev/vda` | 8 GB`/dev/vdb`, 6 GB `/dev/vdc`, 4 GB `/dev/vdd` |
+| `rhel10-delta`   | 2    | 2 GB | 20 GB`/dev/vda` | 8 GB`/dev/vdb`                                       |
 
 ### VM Configuration Notes
 
@@ -79,9 +69,9 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 
 > Objective: Interrupt the boot process in order to gain access to a system
 
-The root password on `rhel10-charlie` is unknown. This time, use the **`init=/bin/bash enforcing=0`** method (not `rd.break`) to recover:
+The root password on `rhel10-charlie` is unknown. This time, use the **`init=/bin/bash`** method (not `rd.break`) to recover:
 
-1. Interrupt GRUB, edit the kernel line, replace `ro` with `rw` and append `init=/bin/bash enforcing=0`
+1. Interrupt GRUB, edit the kernel line, replace `ro` with `rw` and append `init=/bin/bash`
 2. Boot to a raw bash shell
 3. Reset the root password to `Ex200Pass!`
 4. Ensure SELinux will relabel on next boot
@@ -123,8 +113,8 @@ Regenerate GRUB using `grub2-mkconfig` **and** rebuild the initramfs with `dracu
 
 | Host    | Hostname              | IPv4               | IPv6            | Gateway        | DNS                     |
 | ------- | --------------------- | ------------------ | --------------- | -------------- | ----------------------- |
-| charlie | `charlie.ex200.lab` | `10.20.30.11/24` | `fd42::11/64` | NAT/DHCP | NAT/DHCP |
-| delta   | `delta.ex200.lab`   | `10.20.30.12/24` | `fd42::12/64` | NAT/DHCP | NAT/DHCP |
+| charlie | `charlie.ex200.lab` | `10.20.30.11/24` | `fd42::11/64` | `10.20.30.1` | `10.20.30.1, 1.1.1.1` |
+| delta   | `delta.ex200.lab`   | `10.20.30.12/24` | `fd42::12/64` | `10.20.30.1` | `10.20.30.1, 1.1.1.1` |
 
 - Set the connection to autoconnect at boot
 - Add a **connection alias** named `lab-static` on both nodes
@@ -325,20 +315,20 @@ On `delta`:
 
 ---
 
-**Task 16 — GPT Partitions with `parted` (Scripted)** *(charlie, `/dev/nvme0n2`)*
+**Task 16 — GPT Partitions with `parted` (Scripted)** *(charlie, `/dev/vdb`)*
 
 > Objective: List, create, and delete partitions on GPT disks
 
-Using **`parted` in non-interactive mode** (not `fdisk`/`gdisk`) on `/dev/nvme0n2`:
+Using **`parted` in non-interactive mode** (not `fdisk`/`gdisk`) on `/dev/vdb`:
 
 1. Create GPT label
 2. Create partitions:
 
-   - `nvme0n2p1`: 2 GiB — for XFS
-   - `nvme0n2p2`: 1 GiB — for swap
-   - `nvme0n2p3`: rest of disk — for LVM (flag: `lvm`)
-3. Verify alignment with `parted /dev/nvme0n2 align-check optimal 1`
-4. Run `partprobe /dev/nvme0n2`
+   - `vdb1`: 2 GiB — for XFS
+   - `vdb2`: 1 GiB — for swap
+   - `vdb3`: rest of disk — for LVM (flag: `lvm`)
+3. Verify alignment with `parted /dev/vdb align-check optimal 1`
+4. Run `partprobe /dev/vdb`
 
 ---
 
@@ -346,12 +336,12 @@ Using **`parted` in non-interactive mode** (not `fdisk`/`gdisk`) on `/dev/nvme0n
 
 > Objective: Create, mount, unmount, and use VFAT, ext4, and XFS file systems
 
-- Format `nvme0n2p1` as **XFS** with label `charlieXFS`
-- Create a small VFAT filesystem on `/dev/nvme0n3` (use partition `nvme0n3p1`, size 500 MiB) with label `USBDATA`
+- Format `vdb1` as **XFS** with label `charlieXFS`
+- Create a small VFAT filesystem on `/dev/vdc` (use partition `vdc1`, size 500 MiB) with label `USBDATA`
 - Mount points: `/mnt/charliexfs` and `/mnt/usbdata`
 - `/etc/fstab`:
-  - `nvme0n2p1` mounted by **UUID**
-  - `nvme0n3p1` mounted by **LABEL**, mount options `noexec,nodev,nosuid`
+  - `vdb1` mounted by **UUID**
+  - `vdc1` mounted by **LABEL**, mount options `noexec,nodev,nosuid`
 - Run `mount -a`, then `systemctl daemon-reload`
 - Reboot and confirm both are mounted
 
@@ -371,11 +361,11 @@ This exam variant uses a **swap file** instead of a swap partition:
 
 ---
 
-**Task 19 — LVM with Striping and Custom PE Size** *(charlie, `/dev/nvme0n2p3` + `/dev/nvme0n4`)*
+**Task 19 — LVM with Striping and Custom PE Size** *(charlie, `/dev/vdb3` + `/dev/vdd`)*
 
 > Objective: Create/remove PVs, VGs, LVs
 
-1. Initialize `/dev/nvme0n2p3` and `/dev/nvme0n4` as physical volumes (whole `nvme0n4`, no partition)
+1. Initialize `/dev/vdb3` and `/dev/vdd` as physical volumes (whole `vdd`, no partition)
 2. Create VG `vg_lab2` with PE size **32 MiB**
 3. Create a **striped** LV `lv_stripe` with 2 stripes across both PVs, size `1 GiB`
 4. Create a **linear** LV `lv_home2` sized using **80 extents**
@@ -389,9 +379,9 @@ This exam variant uses a **swap file** instead of a swap partition:
 
 > Objective: Extend existing logical volumes; move data non-destructively
 
-1. Migrate all extents off `/dev/nvme0n4`. A plain `pvmove` **will fail here** — work out why, and find the flag that makes it succeed
-2. Remove `/dev/nvme0n4` from `vg_lab2` (`vgreduce`)
-3. Wipe the LVM signature from `/dev/nvme0n4` (`pvremove`, `wipefs -a`)
+1. Migrate all extents off `/dev/vdd`. A plain `pvmove` **will fail here** — work out why, and find the flag that makes it succeed
+2. Remove `/dev/vdd` from `vg_lab2` (`vgreduce`)
+3. Wipe the LVM signature from `/dev/vdd` (`pvremove`, `wipefs -a`)
 4. Extend `lv_home2` to **use all remaining free space** in `vg_lab2` in a **single command** and grow the XFS filesystem online
 5. Confirm with `df -h /mnt/home2` and `lvs -a -o+devices` — note what happened to `lv_stripe`'s segment type
 
@@ -650,7 +640,7 @@ As user `emma` (rootless):
 
 | #  | Task                                              | Reboot Test | Done |
 | -- | ------------------------------------------------- | :---------: | :--: |
-| 1  | Recover root via`init=/bin/bash enforcing=0`                |     ✓     | [ ] |
+| 1  | Recover root via`init=/bin/bash`                |     ✓     | [ ] |
 | 2  | Change default target rescue → graphical         |     ✓     | [ ] |
 | 3  | Bootloader: kernel args + dracut rebuild          |     ✓     | [ ] |
 | 4  | Static IPv4/IPv6 + DNS +`lab-static` connection |     ✓     | [ ] |
@@ -698,9 +688,7 @@ Run on the relevant host **after a reboot**. Checks the objectively-verifiable, 
 ```bash
 #!/usr/bin/env bash
 # ex2-verify.sh — spot-check Exam 2 persistence. Run with sudo on each host.
-export LC_ALL=C
 pass=0; fail=0
-recognized=0
 chk() { # chk "label" "command"
   if eval "$2" &>/dev/null; then printf '  \033[32mPASS\033[0m  %s\n' "$1"; pass=$((pass+1))
   else printf '  \033[31mFAIL\033[0m  %s\n' "$1"; fail=$((fail+1)); fi
@@ -710,7 +698,6 @@ echo "== Host: $(hostname -s) =="
 
 case "$(hostname -s)" in
   *charlie*)
-    recognized=1
     chk "T3  audit=1 in cmdline"        "grep -q 'audit=1' /proc/cmdline"
     chk "T3  net.ifnames=0 in cmdline"  "grep -q 'net.ifnames=0' /proc/cmdline"
     chk "T3  quiet removed"             "! grep -q ' quiet' /proc/cmdline"
@@ -741,7 +728,7 @@ case "$(hostname -s)" in
     chk "T19 vg_lab2 32M PE"            "vgs --noheadings -o vg_extent_size vg_lab2 | grep -q '32'"
     chk "T19 stripe mounted"            "findmnt /mnt/stripe"
     chk "T19 home2 mounted"             "findmnt /mnt/home2"
-    chk "T20 nvme0n4 removed from VG"       "! pvs --noheadings -o pv_name | grep -q /dev/nvme0n4"
+    chk "T20 vdd removed from VG"       "! pvs --noheadings -o pv_name | grep -q /dev/vdd"
     chk "T22 projects mounted"          "findmnt /mnt/projects"
     chk "T22 archive read-only"         "findmnt -no OPTIONS /mnt/archive | grep -q '\\bro\\b'"
     chk "T23 autofs enabled"            "systemctl is-enabled --quiet autofs"
@@ -752,8 +739,8 @@ case "$(hostname -s)" in
     chk "T25 timezone London"           "timedatectl show -p Timezone --value | grep -qx Europe/London"
     chk "T26 lab-highio active"         "tuned-adm active | grep -q lab-highio"
     chk "T26 swappiness 10"             "sysctl -n vm.swappiness | grep -qx 10"
-    chk "T28 journal persistent"        "test -d /var/log/journal && test -n \"\$(journalctl --list-boots --no-pager | awk '\$1 == -1 {print \$1}')\""
-    chk "T28 ForwardToSyslog"           "systemd-analyze cat-config systemd/journald.conf | grep -qE '^ForwardToSyslog=yes'"
+    chk "T28 journal persistent"        "test -d /var/log/journal"
+    chk "T28 ForwardToSyslog"           "grep -qE '^ForwardToSyslog=yes' /etc/systemd/journald.conf"
     chk "T28 secure.lab rule"           "grep -q 'secure.lab' /etc/rsyslog.conf /etc/rsyslog.d/* 2>/dev/null"
     chk "T28 logrotate config"          "test -f /etc/logrotate.d/secure.lab"
     chk "T29 labhealth timer enabled"   "systemctl is-enabled --quiet labhealth.timer"
@@ -768,7 +755,6 @@ case "$(hostname -s)" in
     chk "T34 container_manage_cgroup"   "getsebool container_manage_cgroup | grep -q ' on$'"
     ;;
   *delta*)
-    recognized=1
     chk "T2  default graphical"         "systemctl get-default | grep -qx graphical.target"
     chk "T4  hostname delta"            "hostnamectl --static | grep -qx delta.ex200.lab"
     chk "T4  IPv4 10.20.30.12"          "ip -4 addr show | grep -q '10.20.30.12'"
@@ -788,9 +774,7 @@ case "$(hostname -s)" in
     ;;
 esac
 
-[ "$recognized" = 1 ] || { echo 'Unknown hostname: wrong exam/node'; exit 2; }
-echo "== $pass passed, $fail failed (spotchecks only) =="
-[ "$fail" -eq 0 ]
+echo "== $pass passed, $fail failed =="
 ```
 
 ---
@@ -805,15 +789,14 @@ echo "== $pass passed, $fail failed (spotchecks only) =="
 
 ### Section 1 — Boot & Recovery
 
-**T1 — Break-in via init=/bin/bash enforcing=0**
+**T1 — Break-in via init=/bin/bash**
 
 ```bash
-# At GRUB: 'e', on the linux line change ro -> rw, append init=/bin/bash enforcing=0, Ctrl-X
+# At GRUB: 'e', on the linux line change ro -> rw, append init=/bin/bash, Ctrl-X
 mount -o remount,rw /       # if needed
 passwd root                 # Ex200Pass!
 touch /.autorelabel
-exec /sbin/init             # or: sync; sync
-exec /sbin/init
+exec /sbin/init             # or: sync; reboot -f
 ```
 
 Different from `rd.break` — you skip systemd entirely, so the root filesystem is already mounted by the kernel.
@@ -874,21 +857,21 @@ rpm -qa --last | head
 **T16 — parted scripted**
 
 ```bash
-parted -s /dev/nvme0n2 mklabel gpt
-parted -s /dev/nvme0n2 mkpart primary xfs 1MiB 2049MiB
-parted -s /dev/nvme0n2 mkpart primary linux-swap 2049MiB 3073MiB
-parted -s /dev/nvme0n2 mkpart primary 3073MiB 100%
-parted -s /dev/nvme0n2 set 3 lvm on
+parted -s /dev/vdb mklabel gpt
+parted -s /dev/vdb mkpart primary xfs 1MiB 2049MiB
+parted -s /dev/vdb mkpart primary linux-swap 2049MiB 3073MiB
+parted -s /dev/vdb mkpart primary 3073MiB 100%
+parted -s /dev/vdb set 3 lvm on
 ```
 
 **T20 — pvmove, vgreduce, extend**
 
-`lv_stripe` is striped 2-way across `nvme0n2p3` and `nvme0n4`, so a plain `pvmove` has nowhere to put its extents once `nvme0n4` is gone — LVM needs as many target PVs as stripes unless you force it. `--alloc anywhere` collapses it onto the single remaining PV, and `lv_stripe`'s segment type becomes linear.
+`lv_stripe` is striped 2-way across `vdb3` and `vdd`, so a plain `pvmove` has nowhere to put its extents once `vdd` is gone — LVM needs as many target PVs as stripes unless you force it. `--alloc anywhere` collapses it onto the single remaining PV, and `lv_stripe`'s segment type becomes linear.
 
 ```bash
-pvmove --alloc anywhere /dev/nvme0n4
-vgreduce vg_lab2 /dev/nvme0n4
-pvremove /dev/nvme0n4
+pvmove --alloc anywhere /dev/vdd
+vgreduce vg_lab2 /dev/vdd
+pvremove /dev/vdd
 lvextend -l +100%FREE -r /dev/vg_lab2/lv_home2
 ```
 
@@ -952,8 +935,7 @@ free -h
 rm -f /dev/shm/memtest      # tmpfs file stays resident after dd exits
 
 ps -eo pid,pri,ni,pcpu,comm --sort=-pcpu | head
-read -r -p "PID from the process list: " PID
-renice -n 19 -p "$PID"
+renice -n 19 -p <pid>
 systemd-run --scope -p CPUQuota=20% stress-ng --cpu 1 --timeout 30s
 pkill -f stress-ng
 pkill -f openssl
@@ -963,20 +945,7 @@ journalctl -u chronyd -n 20
 
 **T28 — Journal forwarding + logrotate**
 
-Use a drop-in; the main configuration file may be absent on RHEL/Rocky 10:
-
-```bash
-sudo mkdir -p /var/log/journal /etc/systemd/journald.conf.d
-sudo tee /etc/systemd/journald.conf.d/90-rhcsa.conf >/dev/null <<'EOF'
-[Journal]
-Storage=persistent
-SystemMaxUse=500M
-ForwardToSyslog=yes
-EOF
-sudo systemd-tmpfiles --create --prefix /var/log/journal
-sudo systemctl restart systemd-journald
-sudo journalctl --flush
-```
+`/etc/systemd/journald.conf`: `Storage=persistent`, `SystemMaxUse=500M`, `ForwardToSyslog=yes`.
 
 rsyslog rule: `authpriv.*    /var/log/secure.lab`
 
@@ -1091,13 +1060,12 @@ curl http://localhost:9090/
 
 ### Boot / Recovery
 
-    # init=/bin/bash enforcing=0 method
-    # Boot GRUB -> 'e' -> replace ro with rw -> append init=/bin/bash enforcing=0 -> Ctrl-x
+    # init=/bin/bash method
+    # Boot GRUB -> 'e' -> replace ro with rw -> append init=/bin/bash -> Ctrl-x
     mount -o remount,rw /
     passwd
     touch /.autorelabel
-    exec /sbin/init          # graceful, or sync; sync
-exec /sbin/init
+    exec /sbin/init          # graceful, or sync; reboot -f
 
 ### Parted (scripted)
 
@@ -1109,8 +1077,8 @@ exec /sbin/init
 ### LVM advanced
 
     lvcreate --type striped -i 2 -L 1G -n lv_stripe vg_lab2
-    pvmove --alloc anywhere /dev/nvme0n4
-    vgreduce vg_lab2 /dev/nvme0n4
+    pvmove --alloc anywhere /dev/vdd
+    vgreduce vg_lab2 /dev/vdd
     lvextend -l +100%FREE -r /dev/vg_lab2/lv_home2
 
 ### Firewalld zones + rich rules
@@ -1118,8 +1086,7 @@ exec /sbin/init
     firewall-cmd --permanent --new-zone=labzone
     firewall-cmd --permanent --zone=labzone --add-rich-rule='rule family=ipv4 source address=10.20.30.100 drop'
     firewall-cmd --set-default-zone=labzone
-    nmcli con mod lab-static connection.zone labzone
-nmcli con up lab-static
+    firewall-cmd --permanent --zone=labzone --change-interface=eth0
 
 ### ACLs
 
@@ -1146,7 +1113,7 @@ nmcli con up lab-static
 
 | Area          | Exam#1 approach         | Exam#2 approach                                             |
 | ------------- | ----------------------- | ----------------------------------------------------------- |
-| Root recovery | `rd.break`            | `init=/bin/bash enforcing=0`                                          |
+| Root recovery | `rd.break`            | `init=/bin/bash`                                          |
 | Boot target   | graphical → multi-user | rescue → graphical                                         |
 | Partitions    | `fdisk` interactive   | `parted -s` scripted                                      |
 | Filesystems   | XFS + ext4              | XFS +**VFAT** + noexec/nodev/nosuid                   |

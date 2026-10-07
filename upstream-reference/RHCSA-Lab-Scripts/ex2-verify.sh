@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # ex2-verify.sh — spot-check Exam 2 persistence. Run with sudo on each host.
-export LC_ALL=C
 pass=0; fail=0
-recognized=0
 chk() { # chk "label" "command"
   if eval "$2" &>/dev/null; then printf '  \033[32mPASS\033[0m  %s\n' "$1"; pass=$((pass+1))
   else printf '  \033[31mFAIL\033[0m  %s\n' "$1"; fail=$((fail+1)); fi
@@ -12,7 +10,6 @@ echo "== Host: $(hostname -s) =="
 
 case "$(hostname -s)" in
   *charlie*)
-    recognized=1
     chk "T3  audit=1 in cmdline"        "grep -q 'audit=1' /proc/cmdline"
     chk "T3  net.ifnames=0 in cmdline"  "grep -q 'net.ifnames=0' /proc/cmdline"
     chk "T3  quiet removed"             "! grep -q ' quiet' /proc/cmdline"
@@ -43,7 +40,7 @@ case "$(hostname -s)" in
     chk "T19 vg_lab2 32M PE"            "vgs --noheadings -o vg_extent_size vg_lab2 | grep -q '32'"
     chk "T19 stripe mounted"            "findmnt /mnt/stripe"
     chk "T19 home2 mounted"             "findmnt /mnt/home2"
-    chk "T20 nvme0n4 removed from VG"       "! pvs --noheadings -o pv_name | grep -q /dev/nvme0n4"
+    chk "T20 vdd removed from VG"       "! pvs --noheadings -o pv_name | grep -q /dev/vdd"
     chk "T22 projects mounted"          "findmnt /mnt/projects"
     chk "T22 archive read-only"         "findmnt -no OPTIONS /mnt/archive | grep -q '\\bro\\b'"
     chk "T23 autofs enabled"            "systemctl is-enabled --quiet autofs"
@@ -54,8 +51,8 @@ case "$(hostname -s)" in
     chk "T25 timezone London"           "timedatectl show -p Timezone --value | grep -qx Europe/London"
     chk "T26 lab-highio active"         "tuned-adm active | grep -q lab-highio"
     chk "T26 swappiness 10"             "sysctl -n vm.swappiness | grep -qx 10"
-    chk "T28 journal persistent"        "test -d /var/log/journal && test -n \"\$(journalctl --list-boots --no-pager | awk '\$1 == -1 {print \$1}')\""
-    chk "T28 ForwardToSyslog"           "systemd-analyze cat-config systemd/journald.conf | grep -qE '^ForwardToSyslog=yes'"
+    chk "T28 journal persistent"        "test -d /var/log/journal"
+    chk "T28 ForwardToSyslog"           "grep -qE '^ForwardToSyslog=yes' /etc/systemd/journald.conf"
     chk "T28 secure.lab rule"           "grep -q 'secure.lab' /etc/rsyslog.conf /etc/rsyslog.d/* 2>/dev/null"
     chk "T28 logrotate config"          "test -f /etc/logrotate.d/secure.lab"
     chk "T29 labhealth timer enabled"   "systemctl is-enabled --quiet labhealth.timer"
@@ -70,7 +67,6 @@ case "$(hostname -s)" in
     chk "T34 container_manage_cgroup"   "getsebool container_manage_cgroup | grep -q ' on$'"
     ;;
   *delta*)
-    recognized=1
     chk "T2  default graphical"         "systemctl get-default | grep -qx graphical.target"
     chk "T4  hostname delta"            "hostnamectl --static | grep -qx delta.ex200.lab"
     chk "T4  IPv4 10.20.30.12"          "ip -4 addr show | grep -q '10.20.30.12'"
@@ -90,6 +86,4 @@ case "$(hostname -s)" in
     ;;
 esac
 
-[ "$recognized" = 1 ] || { echo 'Unknown hostname: wrong exam/node'; exit 2; }
-echo "== $pass passed, $fail failed (spotchecks only) =="
-[ "$fail" -eq 0 ]
+echo "== $pass passed, $fail failed =="

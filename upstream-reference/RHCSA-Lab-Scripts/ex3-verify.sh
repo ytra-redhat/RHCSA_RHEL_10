@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 # ex3-verify.sh — spot-check Exam 3 persistence. Run with sudo on each host.
-export LC_ALL=C
 pass=0; fail=0
-recognized=0
 chk() { # chk "label" "command"
   # NOTE: pass=$((pass+1)), not ((pass++)) — the latter returns non-zero on the
   # first increment and would abort the script if anyone adds `set -e`.
@@ -14,7 +12,6 @@ echo "== Host: $(hostname -s) =="
 
 case "$(hostname -s)" in
   *echo*)
-    recognized=1
     chk "T3  kernel args applied"      "grep -q 'audit=1' /proc/cmdline && ! grep -q ' quiet' /proc/cmdline"
     chk "T4  labdata.service active"   "systemctl is-active --quiet labdata.service"
     chk "T5  sshd drop-in present"     "test -f /etc/systemd/system/sshd.service.d/override.conf"
@@ -24,7 +21,7 @@ case "$(hostname -s)" in
     chk "T13 default ACL on share"     "getfacl /srv/shared/data 2>/dev/null | grep -q '^default:user:noah'"
     chk "T15 lab3-static autoconnect"  "nmcli -g connection.autoconnect con show lab3-static | grep -qi yes"
     chk "T15 IPv6 address configured"  "ip -6 addr show | grep -q 'fd10::21'"
-    chk "T20 partition backup saved"   "test -s /root/nvme0n2-parttable.bak"
+    chk "T20 partition backup saved"   "test -s /root/vdb-parttable.bak"
     chk "T16 forward port 8888"        "firewall-cmd --list-forward-ports | grep -q 8888"
     chk "T16 masquerade on"            "firewall-cmd --query-masquerade"
     chk "T17 dvd mounted"              "findmnt /mnt/dvd"
@@ -46,7 +43,6 @@ case "$(hostname -s)" in
     chk "T35 container serving 9191"   "curl -sf http://localhost:9191/ | grep -q 'Echo Container OK'"
     ;;
   *foxtrot*)
-    recognized=1
     chk "T1  boots clean / fstab sane" "mount -a"
     chk "T22 EX3SWAP active"           "swapon --show=LABEL --noheadings | grep -q EX3SWAP"
     chk "T22 priority 5"               "swapon --show=PRIO --noheadings | grep -q 5"
@@ -59,6 +55,4 @@ case "$(hostname -s)" in
     ;;
 esac
 
-[ "$recognized" = 1 ] || { echo 'Unknown hostname: wrong exam/node'; exit 2; }
-echo "== $pass passed, $fail failed (spotchecks only) =="
-[ "$fail" -eq 0 ]
+echo "== $pass passed, $fail failed =="

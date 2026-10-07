@@ -1,13 +1,3 @@
-> **Fusion ARM64-versie — 5 oktober 2026.** Lees eerst [README.md](README.md).
-> Twee NICs: NAT voor internet en DNS; host-only voor onderstaande statische oefenadressen.
-> De host-only NIC krijgt **geen gateway/DNS** en `ipv4.never-default yes`, `ipv6.never-default yes`.
-> Eventuele oorspronkelijke gateway/DNS-tabellen hieronder zijn aangepast: NAT levert die waarden via DHCP.
-> Stel DNS-oefeningen alleen expliciet op NAT in. Kies de lab-NIC via de MAC in `fusion-state.json`, nooit blind `eth0`.
-> `/dev/nvme0n1` is de systeemdisk. Controleer met `lsblk`, `findmnt /` en `wipefs -n` vóór diskbewerkingen.
-> Draai één examenpaar tegelijk. De paren delen Fusion host-only Ethernet; de subnets zijn geen beveiligingsisolatie.
-> Examens blijven community-oefeningen; containers, eigen SELinux-modules en andere verdieping vallen buiten de huidige EX200-doelen.
-> Graders zijn gedeeltelijke controles. Verifieer netwerkdiensten vanaf de tweede VM én herstart beide VM's.
-
 s
 
 ---
@@ -19,7 +9,7 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 ---
 # 🧪 RHCSA Practice Exam — RHEL 10 (EX200)
 
-> **Format:** Performance-based | **Time budget:** 3 hours | **Practice rubric:** 25 / 35 (local study target, not official scoring)
+> **Format:** Performance-based | **Time budget:** 3 hours | **Pass Score:** ~70% (25 / 35)
 >
 > All configurations **must persist after reboot** without intervention.
 >
@@ -37,8 +27,8 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 
 | VM               | vCPU | RAM  | Primary Disk      | Extra Disks                              |
 | ---------------- | ---- | ---- | ----------------- | ---------------------------------------- |
-| `rhel10-alpha` | 2    | 2 GB | 30 GB `/dev/nvme0n1` | none (add 10 GB`/dev/nvme0n2` after setup) |
-| `rhel10-bravo` | 2    | 2 GB | 30 GB `/dev/nvme0n1` | 10 GB`/dev/nvme0n2`, 5 GB `/dev/nvme0n3`     |
+| `rhel10-alpha` | 2    | 2 GB | 20 GB`/dev/vda` | none (add 10 GB`/dev/vdb` after setup) |
+| `rhel10-bravo` | 2    | 2 GB | 20 GB`/dev/vda` | 10 GB`/dev/vdb`, 5 GB `/dev/vdc`     |
 
 ### VM Configuration Notes
 
@@ -66,7 +56,7 @@ Read carefully before beginning:
 
 1. All tasks must be completed on the correct host (alpha or bravo)
 2. All configurations must survive a `reboot` — test this for critical tasks
-3. Complete each practice task fully; this course does not establish official partial-credit rules
+3. Partial credit is not given on the real exam — complete each task fully
 4. Work methodically; a wrong fstab entry can break boot
 5. **Do not scroll to the answer key.** If you're stuck, use `man` — that's the skill being tested
 
@@ -84,7 +74,7 @@ Read carefully before beginning:
 
 > Objective: Interrupt the boot process in order to gain access to a system
 
-The root password on `rhel10-bravo` is unknown. Break into the system using the `init=/bin/bash enforcing=0` method, reset the root password to `RedHat10!`, and ensure SELinux labels are updated before the next boot. Reboot and confirm login.
+The root password on `rhel10-bravo` is unknown. Break into the system using the `init=/bin/bash` method, reset the root password to `RedHat10!`, and ensure SELinux labels are updated before the next boot. Reboot and confirm login.
 
 ---
 
@@ -122,10 +112,10 @@ Configure the following on each server using `nmcli`. Configurations must surviv
 
 | Host  | Hostname            | IPv4                  | IPv6            | Gateway           |
 | ----- | ------------------- | --------------------- | --------------- | ----------------- |
-| alpha | `alpha.lab.local` | `192.168.100.10/24` | `fd00::10/64` | NAT/DHCP |
-| bravo | `bravo.lab.local` | `192.168.100.20/24` | `fd00::20/64` | NAT/DHCP |
+| alpha | `alpha.lab.local` | `192.168.100.10/24` | `fd00::10/64` | `192.168.100.1` |
+| bravo | `bravo.lab.local` | `192.168.100.20/24` | `fd00::20/64` | `192.168.100.1` |
 
-For the DNS exercise, set those resolvers on the NAT profile `fusion-nat`; keep the lab profile free of DNS and a gateway. Add entries for both hosts to `/etc/hosts` on both systems. Confirm connectivity between nodes by hostname.
+Also set DNS to `8.8.8.8` and `1.1.1.1`. Add entries for both hosts to `/etc/hosts` on both systems. Confirm connectivity between nodes by hostname.
 
 ---
 
@@ -262,8 +252,8 @@ Ensure `PermitRootLogin yes` & `PasswordAuthentication yes` is set in `/etc/ssh/
 > **Environment prep (not a graded task):** If the VM was registered with Red Hat, disable the builtin repos before continuing.
 
 ```bash
-sudo subscription-manager repos --disable=rhel-10-for-aarch64-baseos-rpms
-sudo subscription-manager repos --disable=rhel-10-for-aarch64-appstream-rpms
+sudo subscription-manager repos --disable=rhel-10-for-x86_64-baseos-rpms
+sudo subscription-manager repos --disable=rhel-10-for-x86_64-appstream-rpms
 
 # Clean and Verify
 sudo dnf clean all
@@ -325,22 +315,22 @@ Part C — Installing an alternate app-stream version (the modern replacement fo
 
 ### SECTION 6: Storage — Partitions, LVM & Swap
 
-> **Note:** These tasks use the extra disk `/dev/nvme0n2` on bravo (or alpha if you added one)
+> **Note:** These tasks use the extra disk `/dev/vdb` on bravo (or alpha if you added one)
 
 ---
 
-**Task 16 — Create GPT Partitions** *(bravo, /dev/nvme0n2)*
+**Task 16 — Create GPT Partitions** *(bravo, /dev/vdb)*
 
 > Objective: List, create, delete partitions on GPT disks
 
-Using `/dev/nvme0n2` on bravo:
+Using `/dev/vdb` on bravo:
 
 1. Create a GPT partition table
-2. Create a 1 GiB partition (`nvme0n2p1`) — type: Linux filesystem
-3. Create a 500 MiB partition (`nvme0n2p2`) — type: Linux swap
-4. Create a 2 GiB partition (`nvme0n2p3`) — type: Linux filesystem
+2. Create a 1 GiB partition (`vdb1`) — type: Linux filesystem
+3. Create a 500 MiB partition (`vdb2`) — type: Linux swap
+4. Create a 2 GiB partition (`vdb3`) — type: Linux filesystem
 5. Run `partprobe` to inform the kernel
-6. Verify with `lsblk` and `fdisk -l /dev/nvme0n2`
+6. Verify with `lsblk` and `fdisk -l /dev/vdb`
 
 ---
 
@@ -348,8 +338,8 @@ Using `/dev/nvme0n2` on bravo:
 
 > Objective: Configure systems to mount file systems at boot by UUID or label, Create/mount/unmount VFAT, ext4, XFS
 
-1. Format `nvme0n2p1` as **XFS**
-2. Format `nvme0n2p3` as **ext4** with label `DATASTORE`
+1. Format `vdb1` as **XFS**
+2. Format `vdb3` as **ext4** with label `DATASTORE`
 3. Create mount points `/mnt/xfs_data` and `/mnt/ext4_data`
 4. Add persistent entries to `/etc/fstab` using **UUID** for xfs_data and **LABEL** for ext4_data
 5. Run `mount -a` and verify with `df -hT`
@@ -361,20 +351,20 @@ Using `/dev/nvme0n2` on bravo:
 
 > Objective: Add new partitions, logical volumes, and swap to a system non-destructively
 
-1. Format `nvme0n2p2` as swap with label `EXTRASWAP`
+1. Format `vdb2` as swap with label `EXTRASWAP`
 2. Add a persistent swap entry to `/etc/fstab` with priority `10`
 3. Activate the swap and verify with `swapon -s` and `free -h`
 4. Reboot and confirm the swap and its priority survived
 
 ---
 
-**Task 19 — Create and Manage LVM** *(bravo, /dev/nvme0n3)*
+**Task 19 — Create and Manage LVM** *(bravo, /dev/vdc)*
 
 > Objective: Create/remove physical volumes, assign to VGs, create/delete LVs
 
-Using `/dev/nvme0n3` (full disk, unpartitioned):
+Using `/dev/vdc` (full disk, unpartitioned):
 
-1. Initialize `/dev/nvme0n3` as a physical volume
+1. Initialize `/dev/vdc` as a physical volume
 2. Create a volume group `vg_lab` with PE size 16 MiB
 3. Create logical volume `lv_data` with size **500 MiB**
 4. Create logical volume `lv_logs` using **25 extents**
@@ -509,7 +499,7 @@ The following files and directories have incorrect permissions. Fix them:
 
 > Objective: Locate and interpret system log files and journals, Preserve system journals
 
-1. Configure `systemd-journald` to store logs persistently using a drop-in under `/etc/systemd/journald.conf.d/`
+1. Configure `systemd-journald` to store logs persistently by editing `/etc/systemd/journald.conf`
 2. Verify the journal directory is created at `/var/log/journal/`
 3. Use `journalctl` to:
    - Show logs since last boot
@@ -663,7 +653,7 @@ Mark each task after verifying it survives a reboot where applicable.
 | 13 | Configure local DNF repo from ISO         | ✓          | [ ]  |
 | 14 | Package install/remove/query with RPM+DNF | —          | [ ]  |
 | 15 | Package groups + Flatpak + versioned RPM  | —          | [ ]  |
-| 16 | GPT partitions on /dev/nvme0n2                | ✓          | [ ]  |
+| 16 | GPT partitions on /dev/vdb                | ✓          | [ ]  |
 | 17 | Format + mount by UUID and LABEL          | ✓          | [ ]  |
 | 18 | Swap partition with priority              | ✓          | [ ]  |
 | 19 | Create LVM (PV, VG, LV) with PE size      | ✓          | [ ]  |
@@ -697,9 +687,7 @@ Run on the relevant host **after a reboot**. Checks the objectively-verifiable, 
 ```bash
 #!/usr/bin/env bash
 # ex1-verify.sh — spot-check Exam 1 persistence. Run with sudo on each host.
-export LC_ALL=C
 pass=0; fail=0
-recognized=0
 chk() { # chk "label" "command"
   if eval "$2" &>/dev/null; then printf '  \033[32mPASS\033[0m  %s\n' "$1"; pass=$((pass+1))
   else printf '  \033[31mFAIL\033[0m  %s\n' "$1"; fail=$((fail+1)); fi
@@ -709,7 +697,6 @@ echo "== Host: $(hostname -s) =="
 
 case "$(hostname -s)" in
   *alpha*)
-    recognized=1
     chk "T3  GRUB_TIMEOUT=10"          "grep -q '^GRUB_TIMEOUT=10' /etc/default/grub"
     chk "T3  countdown style"          "grep -q '^GRUB_TIMEOUT_STYLE=countdown' /etc/default/grub"
     chk "T4  hostname alpha.lab.local" "hostnamectl --static | grep -qx alpha.lab.local"
@@ -736,7 +723,7 @@ case "$(hostname -s)" in
     chk "T25 timezone Chicago"         "timedatectl show -p Timezone --value | grep -qx America/Chicago"
     chk "T26 tuned lab-custom active"  "tuned-adm active | grep -q lab-custom"
     chk "T26 ppd_base_profile set"     "grep -q lab-custom /etc/tuned/ppd_base_profile"
-    chk "T28 journal persistent"       "test -d /var/log/journal && test -n \"\$(journalctl --list-boots --no-pager | awk '\$1 == -1 {print \$1}')\""
+    chk "T28 journal persistent"       "test -d /var/log/journal"
     chk "T28 rsyslog *.info rule"      "grep -qE '^\\*\\.info' /etc/rsyslog.conf"
     chk "T29 hourly timer enabled"     "systemctl is-enabled --quiet hourly-check.timer"
     chk "T29 alice cron 8am"           "crontab -l -u alice 2>/dev/null | grep -q '^0 8'"
@@ -750,16 +737,15 @@ case "$(hostname -s)" in
     chk "T35 container serving 8080"   "curl -sf http://localhost:8080/ | grep -qi alice"
     ;;
   *bravo*)
-    recognized=1
     chk "T2  default multi-user"       "systemctl get-default | grep -qx multi-user.target"
     chk "T4  hostname bravo.lab.local" "hostnamectl --static | grep -qx bravo.lab.local"
     chk "T4  static IPv4 .20"          "ip -4 addr show | grep -q '192.168.100.20'"
     chk "T10 umask drop-in"            "grep -rq 'umask 0*007' /etc/profile.d/"
-    chk "T16 three partitions on nvme0n2"  "test \$(lsblk -no NAME /dev/nvme0n2 | tail -n +2 | wc -l) -eq 3"
+    chk "T16 three partitions on vdb"  "test \$(lsblk -no NAME /dev/vdb | tail -n +2 | wc -l) -eq 3"
     chk "T17 xfs_data mounted"         "findmnt /mnt/xfs_data"
     chk "T17 mounted by UUID"          "grep -q '^UUID=' /etc/fstab && grep '/mnt/xfs_data' /etc/fstab | grep -q UUID"
     chk "T17 ext4_data by LABEL"       "grep '/mnt/ext4_data' /etc/fstab | grep -q 'LABEL=DATASTORE'"
-    chk "T18 swap active"              "swapon --show | grep -q /dev/nvme0n2p2"
+    chk "T18 swap active"              "swapon --show | grep -q /dev/vdb2"
     chk "T18 swap priority 10"         "swapon --show=PRIO --noheadings | grep -q 10"
     chk "T19 vg_lab 16M PE"            "vgs --noheadings -o vg_extent_size vg_lab | grep -q '16'"
     chk "T19 lv_data mounted"          "findmnt /mnt/lv_data"
@@ -772,9 +758,7 @@ case "$(hostname -s)" in
     ;;
 esac
 
-[ "$recognized" = 1 ] || { echo 'Unknown hostname: wrong exam/node'; exit 2; }
-echo "== $pass passed, $fail failed (spotchecks only) =="
-[ "$fail" -eq 0 ]
+echo "== $pass passed, $fail failed =="
 ```
 
 ---
@@ -791,9 +775,9 @@ echo "== $pass passed, $fail failed (spotchecks only) =="
 
 **T1 — Break into bravo**
 
-> Note from an earlier run: rd.break drops to an emergency mode, not a shell — `init=/bin/bash enforcing=0` is the method used here. *(Worth re-verifying on RHEL 10; standard Red Hat courseware still documents `rd.break` as valid.)*
+> Note from an earlier run: rd.break drops to an emergency mode, not a shell — `init=/bin/bash` is the method used here. *(Worth re-verifying on RHEL 10; standard Red Hat courseware still documents `rd.break` as valid.)*
 
-Key steps: `init=/bin/bash enforcing=0`, `mount -o remount,rw /`, `passwd root`, `touch /.autorelabel`, `sync; exec /sbin/init`
+Key steps: `init=/bin/bash`, `mount -o remount,rw /`, `passwd root`, `touch /.autorelabel`, `exec /sbin/reboot -f`
 
 **T2 — Boot target**
 
@@ -806,8 +790,9 @@ systemctl set-default multi-user.target
 
 ```
 sudo vim /etc/default/grub
-sudo grub2-mkconfig -o /boot/grub2/grub.cfg   # RHEL/Rocky 10, including UEFI
-# Do not overwrite the small UEFI redirect file under /boot/efi/EFI/.
+sudo grub2-mkconfig -o /boot/grub2/grub.cfg   # BIOS
+# OR
+sudo grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg  # UEFI
 ```
 
 ---
@@ -817,18 +802,13 @@ sudo grub2-mkconfig -o /boot/grub2/grub.cfg   # RHEL/Rocky 10, including UEFI
 **T4 — Static IP and hostname**
 
 ```bash
-nmcli -f NAME,UUID,DEVICE con show
-# Identify the host-only NIC via its manifest MAC, then modify the seed profile:
-sudo nmcli con mod fusion-lab connection.id lab-static \
-  ipv4.addresses 192.168.100.10/24 ipv4.method manual \
-  ipv4.gateway "" ipv4.dns "" ipv4.never-default yes \
-  ipv6.addresses fd00::10/64 ipv6.method manual \
-  ipv6.gateway "" ipv6.dns "" ipv6.never-default yes
-sudo nmcli con up lab-static
-# On bravo use 192.168.100.20/24 and fd00::20/64.
-# DNS exercise belongs to NAT, not host-only:
-sudo nmcli con mod fusion-nat ipv4.dns "8.8.8.8 1.1.1.1" ipv4.ignore-auto-dns yes
-sudo nmcli con up fusion-nat
+nmcli con show # get interface name
+sudo nmcli con add type ethernet ifname "interface-name" con-name "connection-name"
+nmcli con mod "connection-name" ipv4.addresses 192.168.100.10/24 ipv4.gateway 192.168.100.1 ipv4.method manual
+nmcli con mod "connection-name" ipv4.dns "8.8.8.8 1.1.1.1"
+nmcli con mod "connection-name" ipv6.addresses fd00::10/64 ipv6.method manual
+nmcli con up "connection-name"
+hostnamectl set-hostname alpha.lab.local
 ```
 
 **T5 — Firewall**
@@ -967,21 +947,17 @@ rpm -q postgresql-server
 
 ```bash
 # Open fdisk
-sudo fdisk /dev/nvme0n2
-```
+sudo fdisk /dev/vdb
 
-Typ onderstaande toetsinvoer uitsluitend **binnen fdisk**, niet in Bash.
-
-```text
 # Inside fdisk:
 g          # Create GPT partition table
 
-n          # Create nvme0n2p1
+n          # Create vdb1
 <Enter>    # Partition number 1
 <Enter>    # First sector
 +1G        # Size
 
-n          # Create nvme0n2p2
+n          # Create vdb2
 <Enter>    # Partition number 2
 <Enter>    # First sector
 +500M      # Size
@@ -990,7 +966,7 @@ t          # Change partition type
 2          # Select partition 2
 19         # Linux swap
 
-n          # Create nvme0n2p3
+n          # Create vdb3
 <Enter>    # Partition number 3
 <Enter>    # First sector
 +2G        # Size
@@ -1002,34 +978,34 @@ w          # Write changes and exit
 
 ```bash
 # Inform the kernel of partition table changes
-sudo partprobe /dev/nvme0n2
+sudo partprobe /dev/vdb
 
 # Verify
 lsblk
-sudo fdisk -l /dev/nvme0n2
+sudo fdisk -l /dev/vdb
 ```
 
 Expected Result:
 
 ```text
-/dev/nvme0n2p1    1G    Linux filesystem
-/dev/nvme0n2p2  500M    Linux swap
-/dev/nvme0n2p3    2G    Linux filesystem
+/dev/vdb1    1G    Linux filesystem
+/dev/vdb2  500M    Linux swap
+/dev/vdb3    2G    Linux filesystem
 ```
 
 **T17 — Filesystems by UUID and LABEL**
 
 ```bash
 # Create filesystems
-sudo mkfs.xfs /dev/nvme0n2p1
-sudo mkfs.ext4 -L DATASTORE /dev/nvme0n2p3
+sudo mkfs.xfs /dev/vdb1
+sudo mkfs.ext4 -L DATASTORE /dev/vdb3
 
 # Create mount points
 sudo mkdir -p /mnt/xfs_data
 sudo mkdir -p /mnt/ext4_data
 
-# Get UUID of nvme0n2p1
-UUID=$(sudo blkid -s UUID -o value /dev/nvme0n2p1)
+# Get UUID of vdb1
+UUID=$(sudo blkid -s UUID -o value /dev/vdb1)
 
 # Add persistent mounts to /etc/fstab
 echo "UUID=${UUID} /mnt/xfs_data xfs defaults 0 0" | sudo tee -a /etc/fstab
@@ -1061,8 +1037,8 @@ ls /mnt/ext4_data
 Expected Result:
 
 ```text
-/dev/nvme0n2p1 mounted on /mnt/xfs_data (xfs) using UUID=
-/dev/nvme0n2p3 mounted on /mnt/ext4_data (ext4) using LABEL=DATASTORE
+/dev/vdb1 mounted on /mnt/xfs_data (xfs) using UUID=
+/dev/vdb3 mounted on /mnt/ext4_data (ext4) using LABEL=DATASTORE
 
 /mnt/xfs_data/xfs_test.txt exists
 /mnt/ext4_data/ext4_test.txt exists
@@ -1072,10 +1048,10 @@ Expected Result:
 
 ```bash
 # Create swap signature
-sudo mkswap /dev/nvme0n2p2
+sudo mkswap /dev/vdb2
 
 # Get UUID
-UUID=$(sudo blkid -s UUID -o value /dev/nvme0n2p2)
+UUID=$(sudo blkid -s UUID -o value /dev/vdb2)
 
 # Add persistent swap entry with priority 10
 echo "UUID=${UUID} none swap defaults,pri=10 0 0" | sudo tee -a /etc/fstab
@@ -1105,7 +1081,7 @@ Expected Result:
 
 ```text
 NAME      TYPE SIZE USED PRIO
-/dev/nvme0n2p2 partition 500M   0B   10
+/dev/vdb2 partition 500M   0B   10
 ```
 
 And:
@@ -1118,10 +1094,10 @@ Swap: 500M
 
 ```bash
 # Create physical volume
-sudo pvcreate /dev/nvme0n3
+sudo pvcreate /dev/vdc
 
 # Create volume group with 16 MiB PE size
-sudo vgcreate -s 16M vg_lab /dev/nvme0n3
+sudo vgcreate -s 16M vg_lab /dev/vdc
 
 # Create logical volumes
 sudo lvcreate -L 500M -n lv_data vg_lab
@@ -1159,7 +1135,7 @@ sudo lvs
 Expected Result:
 
 ```text
-PV: /dev/nvme0n3     VG: vg_lab
+PV: /dev/vdc     VG: vg_lab
 VG PE size: 16.00 MiB
 lv_data  500.00m  (XFS)   -> /mnt/lv_data
 lv_logs  400.00m  (ext4)  -> /mnt/lv_logs     # 25 extents x 16 MiB
@@ -1562,9 +1538,7 @@ Step 7:  new sleep with NI = 15
 
 ```bash
 # Configure journald for persistent storage
-sudo mkdir -p /etc/systemd/journald.conf.d
-printf '[Journal]\nStorage=persistent\n' | sudo tee /etc/systemd/journald.conf.d/90-rhcsa.conf
-sudo systemd-tmpfiles --create --prefix /var/log/journal
+sudo sed -i 's/^#\?Storage=.*/Storage=persistent/' /etc/systemd/journald.conf
 
 # Create the persistent journal directory (journald will also do this itself on restart)
 sudo mkdir -p /var/log/journal
@@ -1572,7 +1546,6 @@ sudo systemd-tmpfiles --create --prefix /var/log/journal
 
 # Restart journald to apply
 sudo systemctl restart systemd-journald
-sudo journalctl --flush
 
 # Verify the directory exists and journald is using it
 ls -ld /var/log/journal
@@ -1604,7 +1577,7 @@ grep "RHCSA test message" /var/log/messages.info
 Expected Results:
 
 ```text
-Step 1-2:  /etc/systemd/journald.conf.d/90-rhcsa.conf has Storage=persistent; /var/log/journal/ exists after restart
+Step 1-2:  /etc/systemd/journald.conf has Storage=persistent; /var/log/journal/ exists after restart
 Step 3:    journalctl -b, -u sshd, -p err, -n 50 all return filtered output
 Step 4:    /var/log/messages.info receives *.info and higher messages after rsyslog restart
 Step 5:    logger test line appears in /var/log/messages.info

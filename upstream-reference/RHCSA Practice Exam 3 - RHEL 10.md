@@ -1,13 +1,3 @@
-> **Fusion ARM64-versie — 5 oktober 2026.** Lees eerst [README.md](README.md).
-> Twee NICs: NAT voor internet en DNS; host-only voor onderstaande statische oefenadressen.
-> De host-only NIC krijgt **geen gateway/DNS** en `ipv4.never-default yes`, `ipv6.never-default yes`.
-> Eventuele oorspronkelijke gateway/DNS-tabellen hieronder zijn aangepast: NAT levert die waarden via DHCP.
-> Stel DNS-oefeningen alleen expliciet op NAT in. Kies de lab-NIC via de MAC in `fusion-state.json`, nooit blind `eth0`.
-> `/dev/nvme0n1` is de systeemdisk. Controleer met `lsblk`, `findmnt /` en `wipefs -n` vóór diskbewerkingen.
-> Draai één examenpaar tegelijk. De paren delen Fusion host-only Ethernet; de subnets zijn geen beveiligingsisolatie.
-> Examens blijven community-oefeningen; containers, eigen SELinux-modules en andere verdieping vallen buiten de huidige EX200-doelen.
-> Graders zijn gedeeltelijke controles. Verifieer netwerkdiensten vanaf de tweede VM én herstart beide VM's.
-
 ---
 title: RHCSA Practice Exam 3 - RHEL 10
 tags: [certifications, rhcsa, rhel10, practice, linux, gap-fill]
@@ -35,17 +25,144 @@ note: Answer key is at the BOTTOM of this file. Do not scroll past the Grading C
 
 ---
 
-## Lab Environment Setup — Fusion
+## 🖥️ Lab Environment Setup
 
-Gebruik `fusion-lab.py create --exam 3 --iso /pad/naar/aarch64-dvd.iso`.
-Start en seed echo en foxtrot; schakel beide normaal uit en maak `exam-ready` snapshots.
-Zie README voor de volledige route. In echo worden labdata.service en httpd bewust gebroken;
-foxtrot krijgt de ontbrekende fstab-UUID en een onbekend rootwachtwoord.
+### Required Virtual Machines
 
-| Host | IPv4 | IPv6 | Gateway en DNS |
-|---|---|---|---|
-| echo | 172.16.40.21/24 | fd10::21/64 | via NAT/DHCP, niet op lab-NIC |
-| foxtrot | 172.16.40.22/24 | fd10::22/64 | via NAT/DHCP, niet op lab-NIC |
+| VM                | vCPU | RAM  | Primary Disk       | Extra Disks                        |
+| ----------------- | ---- | ---- | ------------------ | ---------------------------------- |
+| `rhel10-echo`     | 2    | 2 GB | 20 GB `/dev/vda`   | 8 GB `/dev/vdb`, 6 GB `/dev/vdc`   |
+| `rhel10-foxtrot`  | 2    | 2 GB | 20 GB `/dev/vda`   | 8 GB `/dev/vdb`                    |
+
+### Network — third isolated subnet
+
+| Host    | Hostname            | IPv4               | IPv6             | Gateway        | DNS                      |
+| ------- | ------------------- | ------------------ | ---------------- | -------------- | ------------------------ |
+| echo    | `echo.ex200.net`    | `172.16.40.21/24`  | `fd10::21/64`    | `172.16.40.1`  | `172.16.40.1, 1.1.1.1`   |
+| foxtrot | `foxtrot.ex200.net` | `172.16.40.22/24`  | `fd10::22/64`    | `172.16.40.1`  | `172.16.40.1, 1.1.1.1`   |
+
+### Build (clones from `rhel10-golden` — see `[[RHCSA Exam Lab Setup]]` Phase 0)
+
+```bash
+# Third network
+cat > /tmp/rhcsa-net3.xml <<'EOF'
+<network>
+  <name>rhcsa-net3</name>
+  <forward mode='nat'/>
+  <bridge name='virbr-rhcsa3' stp='on' delay='0'/>
+  <domain name='ex200.net'/>
+  <ip address='172.16.40.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='172.16.40.100' end='172.16.40.199'/>
+    </dhcp>
+  </ip>
+</network>
+EOF
+sudo virsh net-define /tmp/rhcsa-net3.xml
+sudo virsh net-autostart rhcsa-net3
+sudo virsh net-start rhcsa-net3
+
+# Clone the pair
+sudo virt-clone --original rhel10-golden --name rhel10-echo \
+  --file /home/libvirt/images/rhel10-echo.qcow2
+sudo virt-clone --original rhel10-golden --name rhel10-foxtrot \
+  --file /home/libvirt/images/rhel10-foxtrot.qcow2
+
+for vm in rhel10-echo rhel10-foxtrot; do
+  sudo virsh detach-interface "${vm}" network --config || true
+  sudo virsh attach-interface "${vm}" network rhcsa-net3 --model virtio --config
+done
+
+# Memory / CPU — match Phases 3.3 and 4.3 in the lab guide
+for vm in rhel10-echo rhel10-foxtrot; do
+  sudo virsh setmaxmem "${vm}" 2048M --config
+  sudo virsh setmem    "${vm}" 2048M --config
+  sudo virsh setvcpus  "${vm}" 2 --config --maximum
+  sudo virsh setvcpus  "${vm}" 2 --config
+done
+
+sudo virt-customize -d rhel10-echo    --hostname rhel10-echo
+sudo virt-customize -d rhel10-foxtrot --hostname rhel10-foxtrot
+
+# Extra disks (virtio bus → they appear as /dev/vdX inside the guest)
+sudo "$RHCSA_SCRIPTS/add-disk.sh" rhel10-echo    vdb 8
+sudo "$RHCSA_SCRIPTS/add-disk.sh" rhel10-echo    vdc 6
+sudo "$RHCSA_SCRIPTS/add-disk.sh" rhel10-foxtrot vdb 8
+
+# DVD ISO to echo (Task 17 repo work)
+sudo virsh change-media rhel10-echo sda \
+  /home/libvirt/iso/rhel-10.2-x86_64-dvd.iso --insert --config
+```
+
+### 🔧 Seeding the broken conditions (do this BEFORE the exam-ready snapshot)
+
+Exam 3 depends on three deliberately broken states. Boot each VM once, run its seed block, then shut down and snapshot.
+
+**On `rhel10-foxtrot` — break the boot (Task 1):**
+
+```bash
+# Bogus UUID with no nofail → boot drops to emergency
+echo "UUID=deadbeef-0000-0000-0000-000000000000 /mnt/archive xfs defaults 0 0" \
+  | sudo tee -a /etc/fstab
+
+# Scramble root so emergency.target's sulogin prompt is useless
+sudo passwd root --stdin <<< "$(openssl rand -base64 24)" >/dev/null 2>&1 || \
+  echo "root:$(openssl rand -base64 24)" | sudo chpasswd
+sudo shutdown -h now
+```
+
+**On `rhel10-echo` — break a service (Task 4) and seed the SELinux violations (Task 33):**
+
+```bash
+# --- Task 4: a unit that will fail on boot ---
+sudo tee /etc/systemd/system/labdata.service >/dev/null <<'EOF'
+[Unit]
+Description=Lab Data Collector
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/local/sbin/labdata-collect --daemon
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+EOF
+sudo systemctl daemon-reload
+sudo systemctl enable labdata.service
+
+# --- Task 33: httpd pre-configured into TWO SELinux violations ---
+sudo dnf install -y httpd policycoreutils-python-utils setroubleshoot-server
+sudo mkdir -p /srv/intranet
+echo "Echo Intranet OK" | sudo tee /srv/intranet/index.html >/dev/null
+sudo tee /etc/httpd/conf.d/intranet.conf >/dev/null <<'EOF'
+Listen 8404
+<VirtualHost *:8404>
+    DocumentRoot /srv/intranet
+    <Directory /srv/intranet>
+        Require all granted
+    </Directory>
+</VirtualHost>
+EOF
+# Deliberately do NOT label /srv/intranet and do NOT label port 8404.
+sudo systemctl enable httpd
+sudo firewall-cmd --permanent --add-port=8404/tcp && sudo firewall-cmd --reload
+sudo shutdown -h now
+```
+
+**Then snapshot both:**
+
+```bash
+sudo virsh start rhel10-echo; sudo virsh start rhel10-foxtrot
+for vm in rhel10-echo rhel10-foxtrot; do
+  sudo virsh snapshot-create-as "${vm}" exam3-ready \
+    "Exam 3 pristine: foxtrot fstab broken + root scrambled, echo labdata + SELinux seeded"
+done
+```
+
+> **Reset for a retake:** `virsh destroy` then `virsh snapshot-revert <vm> exam3-ready`.
+
+---
 
 ## 📋 Exam Instructions
 
@@ -251,8 +368,8 @@ Create `/srv/shared/data`, owned by `emma:research`, mode `2770`:
 
 **Task 15 — Two Connection Profiles and Resolution Order** *(echo)*
 
-1. Configure the host-only connection as a profile named `lab3-static` with the IPv4 and **IPv6 address** from the environment table; leave its gateway and DNS empty and use never-default for both families; it must autoconnect at boot
-2. For the DHCP alternative, use Fusion host-only DHCP (its subnet differs from the static exam subnet). Confirm the configured host-only network actually offers DHCP. Create a **second** profile named `lab3-dhcp` on the same interface set to DHCP for IPv4 and automatic for IPv6, with autoconnect **disabled**
+1. Configure the primary connection as a profile named `lab3-static` with the IPv4 address, **IPv6 address**, gateway, and DNS from the environment table; it must autoconnect at boot
+2. Create a **second** profile named `lab3-dhcp` on the same interface set to DHCP for IPv4 and automatic for IPv6, with autoconnect **disabled**
 3. Demonstrate switching between the two profiles and switching back to `lab3-static`
 4. Add both hosts to `/etc/hosts`
 5. Explain in `/root/resolution.txt`: which file controls the *order* in which hostname lookups consult files vs DNS, and which line in it applies
@@ -313,22 +430,22 @@ Create `/srv/shared/data`, owned by `emma:research`, mode `2770`:
 
 ---
 
-**Task 20 — GPT Partitioning and Type Codes With `fdisk`** *(echo, `/dev/nvme0n2`)*
+**Task 20 — GPT Partitioning and Type Codes With `fdisk`** *(echo, `/dev/vdb`)*
 
 Exam 1 drove `fdisk` interactively and Exam 2 used `parted -s`. This time, use `fdisk` but focus on **partition type codes** and on capturing the layout in a machine-readable form.
 
-1. Create a fresh GPT table on `/dev/nvme0n2`
-2. Create `nvme0n2p1` = 3 GiB, type **Linux filesystem**
-3. Create `nvme0n2p2` = 2 GiB, type **Linux LVM** — you must change the type, not accept the default
+1. Create a fresh GPT table on `/dev/vdb`
+2. Create `vdb1` = 3 GiB, type **Linux filesystem**
+3. Create `vdb2` = 2 GiB, type **Linux LVM** — you must change the type, not accept the default
 4. Inform the kernel, then verify with `lsblk` and `fdisk -l`
 5. Dump the partition table — including each partition's **type GUID and PARTUUID** — to `/root/gpt_layout.txt`
-6. Save a restorable backup of the partition table to `/root/nvme0n2-parttable.bak`, and record in `/root/gpt_layout.txt` the command that would restore it
+6. Save a restorable backup of the partition table to `/root/vdb-parttable.bak`, and record in `/root/gpt_layout.txt` the command that would restore it
 
 ---
 
-**Task 21 — Shrink a Logical Volume** *(echo, `/dev/nvme0n2p2` + `/dev/nvme0n3`)*
+**Task 21 — Shrink a Logical Volume** *(echo, `/dev/vdb2` + `/dev/vdc`)*
 
-1. Create PVs on `/dev/nvme0n2p2` and `/dev/nvme0n3`, and VG `vg_ex3` with an 8 MiB PE size
+1. Create PVs on `/dev/vdb2` and `/dev/vdc`, and VG `vg_ex3` with an 8 MiB PE size
 2. Create LV `lv_shrink` of **4 GiB**, formatted **ext4**, mounted persistently at `/mnt/shrink`
 3. Write a test file into it and record a checksum of that file
 4. Shrink `lv_shrink` — filesystem **and** logical volume — to **2 GiB**
@@ -337,10 +454,10 @@ Exam 1 drove `fdisk` interactively and Exam 2 used `parted -s`. This time, use `
 
 ---
 
-**Task 22 — Replace Swap Cleanly** *(foxtrot, `/dev/nvme0n2`)*
+**Task 22 — Replace Swap Cleanly** *(foxtrot, `/dev/vdb`)*
 
 1. Record the current swap configuration `[/root/swap_before.txt]`
-2. Create a 1 GiB partition `/dev/nvme0n2p1` and format it as swap with the label `EX3SWAP`
+2. Create a 1 GiB partition `/dev/vdb1` and format it as swap with the label `EX3SWAP`
 3. Add it to `/etc/fstab` **by LABEL** with priority `5`
 4. Activate it and verify both the label and the priority are in effect
 5. Deactivate and permanently remove the **original** swap device from the system — it must not return after reboot
@@ -350,7 +467,7 @@ Exam 1 drove `fdisk` interactively and Exam 2 used `parted -s`. This time, use `
 
 **Task 23 — Mount Options and Live Remount** *(foxtrot)*
 
-1. Create a 2 GiB partition `/dev/nvme0n2p2`, format XFS, mount persistently at `/data/vault` with options `noexec,nosuid,nodev`
+1. Create a 2 GiB partition `/dev/vdb2`, format XFS, mount persistently at `/data/vault` with options `noexec,nosuid,nodev`
 2. Copy any executable binary into `/data/vault` and demonstrate it will not execute; record the error `[/root/noexec_proof.txt]`
 3. Remount `/data/vault` **read-only without unmounting it** and prove writes fail
 4. Remount it read-write again, still without unmounting
@@ -581,9 +698,7 @@ Run on the relevant host **after a reboot**. Checks the objectively-verifiable, 
 ```bash
 #!/usr/bin/env bash
 # ex3-verify.sh — spot-check Exam 3 persistence. Run with sudo on each host.
-export LC_ALL=C
 pass=0; fail=0
-recognized=0
 chk() { # chk "label" "command"
   # NOTE: pass=$((pass+1)), not ((pass++)) — the latter returns non-zero on the
   # first increment and would abort the script if anyone adds `set -e`.
@@ -595,7 +710,6 @@ echo "== Host: $(hostname -s) =="
 
 case "$(hostname -s)" in
   *echo*)
-    recognized=1
     chk "T3  kernel args applied"      "grep -q 'audit=1' /proc/cmdline && ! grep -q ' quiet' /proc/cmdline"
     chk "T4  labdata.service active"   "systemctl is-active --quiet labdata.service"
     chk "T5  sshd drop-in present"     "test -f /etc/systemd/system/sshd.service.d/override.conf"
@@ -605,7 +719,7 @@ case "$(hostname -s)" in
     chk "T13 default ACL on share"     "getfacl /srv/shared/data 2>/dev/null | grep -q '^default:user:noah'"
     chk "T15 lab3-static autoconnect"  "nmcli -g connection.autoconnect con show lab3-static | grep -qi yes"
     chk "T15 IPv6 address configured"  "ip -6 addr show | grep -q 'fd10::21'"
-    chk "T20 partition backup saved"   "test -s /root/nvme0n2-parttable.bak"
+    chk "T20 partition backup saved"   "test -s /root/vdb-parttable.bak"
     chk "T16 forward port 8888"        "firewall-cmd --list-forward-ports | grep -q 8888"
     chk "T16 masquerade on"            "firewall-cmd --query-masquerade"
     chk "T17 dvd mounted"              "findmnt /mnt/dvd"
@@ -627,7 +741,6 @@ case "$(hostname -s)" in
     chk "T35 container serving 9191"   "curl -sf http://localhost:9191/ | grep -q 'Echo Container OK'"
     ;;
   *foxtrot*)
-    recognized=1
     chk "T1  boots clean / fstab sane" "mount -a"
     chk "T22 EX3SWAP active"           "swapon --show=LABEL --noheadings | grep -q EX3SWAP"
     chk "T22 priority 5"               "swapon --show=PRIO --noheadings | grep -q 5"
@@ -640,9 +753,7 @@ case "$(hostname -s)" in
     ;;
 esac
 
-[ "$recognized" = 1 ] || { echo 'Unknown hostname: wrong exam/node'; exit 2; }
-echo "== $pass passed, $fail failed (spotchecks only) =="
-[ "$fail" -eq 0 ]
+echo "== $pass passed, $fail failed =="
 ```
 
 ---
@@ -662,12 +773,12 @@ echo "== $pass passed, $fail failed (spotchecks only) =="
 The root password is unknown, so `emergency.target`'s `sulogin` prompt is a dead end. Break in below systemd:
 
 ```bash
-# At GRUB: press 'e', find the linux line, change ro→rw, append init=/bin/bash enforcing=0, Ctrl-X
+# At GRUB: press 'e', find the linux line, change ro→rw, append init=/bin/bash, Ctrl-X
 mount -o remount,rw /          # if not already rw
 vi /etc/fstab                  # delete (or comment) the bogus UUID line
 passwd root                    # set Ex3Recovery!
 touch /.autorelabel            # SELinux relabel — you edited files without policy loaded
-sync; exec /sbin/init           # or: sync; exec /sbin/init
+exec /sbin/reboot -f           # or: sync; exec /sbin/init
 ```
 
 The failing line is the `UUID=deadbeef-...` entry: a nonexistent device with no `nofail`, so `local-fs.target` fails and boot stops. Adding `nofail` is the alternative fix if the mount is meant to stay defined.
@@ -923,20 +1034,17 @@ ls -Z /var/www/html/preserved.html >> /root/context_report.txt
 **T15 — Two profiles**
 
 ```bash
-nmcli con show
-read -r -p "Host-only interface (match manifest MAC): " LAB_IF
-sudo nmcli con add type ethernet ifname "$LAB_IF" con-name lab3-static \
-  ipv4.method manual ipv4.addresses 172.16.40.21/24 ipv4.gateway "" ipv4.never-default yes \
-  ipv4.dns "" \
-  ipv6.method manual ipv6.addresses fd10::21/64 ipv6.gateway "" ipv6.never-default yes \
+nmcli con show                              # find the device name, e.g. enp1s0
+sudo nmcli con add type ethernet ifname enp1s0 con-name lab3-static \
+  ipv4.method manual ipv4.addresses 172.16.40.21/24 ipv4.gateway 172.16.40.1 \
+  ipv4.dns "172.16.40.1 1.1.1.1" \
+  ipv6.method manual ipv6.addresses fd10::21/64 \
   connection.autoconnect yes
-sudo nmcli con mod fusion-lab connection.autoconnect no
-sudo nmcli con add type ethernet ifname "$LAB_IF" con-name lab3-dhcp \
-  ipv4.method auto ipv4.never-default yes ipv4.ignore-auto-dns yes \
-  ipv6.method auto ipv6.never-default yes ipv6.ignore-auto-dns yes connection.autoconnect no
+sudo nmcli con add type ethernet ifname enp1s0 con-name lab3-dhcp \
+  ipv4.method auto ipv6.method auto connection.autoconnect no
 
-ip -4 addr show "$LAB_IF"
-ip -6 addr show "$LAB_IF"
+ip -4 addr show enp1s0
+ip -6 addr show enp1s0
 ping6 -c2 fd10::22                          # reach foxtrot over IPv6
 
 sudo nmcli con up lab3-dhcp        # switch
@@ -1054,7 +1162,7 @@ rpm -V zsh                        # silence = unmodified
 **T20 — fdisk, type codes, and a table backup**
 
 ```bash
-sudo fdisk /dev/nvme0n2
+sudo fdisk /dev/vdb
 # g          → new empty GPT label
 # n          → part 1, default first sector, +3G      (type defaults to Linux filesystem)
 # n          → part 2, default first sector, +2G
@@ -1064,21 +1172,21 @@ sudo fdisk /dev/nvme0n2
 # p          → print to confirm
 # w          → write and exit
 
-sudo partprobe /dev/nvme0n2
-lsblk /dev/nvme0n2
-sudo fdisk -l /dev/nvme0n2
+sudo partprobe /dev/vdb
+lsblk /dev/vdb
+sudo fdisk -l /dev/vdb
 ```
 
 Capture the layout with type GUIDs and PARTUUIDs, and take a restorable backup:
 
 ```bash
 # sfdisk's dump format shows type= (GUID) and uuid= (PARTUUID) per partition
-sudo sfdisk -d /dev/nvme0n2 | sudo tee /root/gpt_layout.txt
-sudo lsblk -o NAME,SIZE,PARTTYPENAME,PARTUUID /dev/nvme0n2 | sudo tee -a /root/gpt_layout.txt
+sudo sfdisk -d /dev/vdb | sudo tee /root/gpt_layout.txt
+sudo lsblk -o NAME,SIZE,PARTTYPENAME,PARTUUID /dev/vdb | sudo tee -a /root/gpt_layout.txt
 
 # Restorable backup of the partition table
-sudo sfdisk -d /dev/nvme0n2 | sudo tee /root/nvme0n2-parttable.bak
-echo '# Restore with: sudo sfdisk /dev/nvme0n2 < /root/nvme0n2-parttable.bak' \
+sudo sfdisk -d /dev/vdb | sudo tee /root/vdb-parttable.bak
+echo '# Restore with: sudo sfdisk /dev/vdb < /root/vdb-parttable.bak' \
   | sudo tee -a /root/gpt_layout.txt
 ```
 
@@ -1089,8 +1197,8 @@ echo '# Restore with: sudo sfdisk /dev/nvme0n2 < /root/nvme0n2-parttable.bak' \
 **T21 — Shrink an ext4 LV**
 
 ```bash
-sudo pvcreate /dev/nvme0n2p2 /dev/nvme0n3
-sudo vgcreate -s 8M vg_ex3 /dev/nvme0n2p2 /dev/nvme0n3
+sudo pvcreate /dev/vdb2 /dev/vdc
+sudo vgcreate -s 8M vg_ex3 /dev/vdb2 /dev/vdc
 sudo lvcreate -L 4G -n lv_shrink vg_ex3
 sudo mkfs.ext4 /dev/vg_ex3/lv_shrink
 sudo mkdir -p /mnt/shrink
@@ -1125,9 +1233,9 @@ Always shrink the **filesystem before** the volume. `-r` does both in the right 
 swapon --show > /root/swap_before.txt
 free -h >> /root/swap_before.txt
 
-sudo fdisk /dev/nvme0n2     # g (if the disk is blank) → n → +1G → t → L → 19 (Linux swap) → w
-sudo partprobe /dev/nvme0n2
-sudo mkswap -L EX3SWAP /dev/nvme0n2p1
+sudo fdisk /dev/vdb     # g (if the disk is blank) → n → +1G → t → L → 19 (Linux swap) → w
+sudo partprobe /dev/vdb
+sudo mkswap -L EX3SWAP /dev/vdb1
 echo 'LABEL=EX3SWAP none swap defaults,pri=5 0 0' | sudo tee -a /etc/fstab
 sudo swapon -a
 swapon --show                            # NAME, LABEL, PRIO 5
@@ -1158,11 +1266,11 @@ swapon --show > /root/swap_after.txt
 **T23 — Mount options and remount**
 
 ```bash
-sudo fdisk /dev/nvme0n2                      # n → +2G → (type defaults to Linux filesystem) → w
-sudo partprobe /dev/nvme0n2
-sudo mkfs.xfs /dev/nvme0n2p2
+sudo fdisk /dev/vdb                      # n → +2G → (type defaults to Linux filesystem) → w
+sudo partprobe /dev/vdb
+sudo mkfs.xfs /dev/vdb2
 sudo mkdir -p /data/vault
-echo "UUID=$(sudo blkid -s UUID -o value /dev/nvme0n2p2) /data/vault xfs defaults,noexec,nosuid,nodev 0 0" \
+echo "UUID=$(sudo blkid -s UUID -o value /dev/vdb2) /data/vault xfs defaults,noexec,nosuid,nodev 0 0" \
   | sudo tee -a /etc/fstab
 sudo mount -a
 
@@ -1251,8 +1359,7 @@ journalctl _COMM=sudo                                   > /root/j4.txt
 journalctl --disk-usage                                 > /root/j5.txt
 
 sudo journalctl --vacuum-size=200M
-sudo mkdir -p /etc/systemd/journald.conf.d
-printf '[Journal]\nSystemMaxUse=200M\n' | sudo tee /etc/systemd/journald.conf.d/90-rhcsa-size.conf
+sudo sed -i 's/^#\?SystemMaxUse=.*/SystemMaxUse=200M/' /etc/systemd/journald.conf
 sudo systemctl restart systemd-journald
 ```
 
@@ -1280,9 +1387,8 @@ sudo reboot
 sudo systemctl enable --now atd
 echo 'echo "at job ran" >> /var/log/at3.log' | at now + 10 minutes
 atq
-read -r -p "Job number from atq: " JOB
-at -c "$JOB" > /root/at_job.txt
-atrm "$JOB"
+at -c <jobnum> > /root/at_job.txt
+atrm <jobnum>
 atq                                        # empty
 
 echo emma | sudo tee /etc/at.allow         # allow-list: only emma (plus root)

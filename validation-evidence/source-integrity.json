@@ -1,0 +1,138 @@
+{
+  "files": 33,
+  "all_unchanged": true,
+  "checks": [
+    {
+      "file": ".gitignore",
+      "unchanged": true
+    },
+    {
+      "file": ".idea/vcs.xml",
+      "unchanged": true
+    },
+    {
+      "file": ".idea/workspace.xml",
+      "unchanged": true
+    },
+    {
+      "file": "CHANGELOG.md",
+      "unchanged": true
+    },
+    {
+      "file": "README.md",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/add-disk.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/ex1-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/ex2-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/fusion-lab.py.before-lock-fix-20261008",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/guest-golden.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/guest-network.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/rebuild-rhcsa-labs.sh",
+      "unchanged": true
+    },
+    {
+      "file": "RHCSA-Lab-Scripts/rhel10-dvd-download.sh",
+      "unchanged": true
+    },
+    {
+      "file": "UPSTREAM-SHA256.json",
+      "unchanged": true
+    },
+    {
+      "file": "VALIDATION.md",
+      "unchanged": true
+    },
+    {
+      "file": "guest-seeds/alpha.sh",
+      "unchanged": true
+    },
+    {
+      "file": "guest-seeds/bravo.sh",
+      "unchanged": true
+    },
+    {
+      "file": "tools/validate.py",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/README.md",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA Practice Exam 1 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA Practice Exam 2 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA Practice Exam 3 - RHEL 10.md",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/add-disk.sh",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/ex1-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/ex2-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/ex3-verify.sh",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/rebuild-rhcsa-labs.sh",
+      "unchanged": true
+    },
+    {
+      "file": "upstream-reference/RHCSA-Lab-Scripts/rhel10-dvd-download.sh",
+      "unchanged": true
+    }
+  ]
+}

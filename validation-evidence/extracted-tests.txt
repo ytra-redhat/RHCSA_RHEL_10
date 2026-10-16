@@ -1,0 +1,178 @@
+test_bad_grub_labels_refused (__main__.AutomaticInstaller.test_bad_grub_labels_refused) ... ok
+test_bad_mac_and_hash_refused (__main__.AutomaticInstaller.test_bad_mac_and_hash_refused) ... ok
+test_boot_detaches_automatic_media_before_start (__main__.AutomaticInstaller.test_boot_detaches_automatic_media_before_start) ... ok
+test_existing_golden_preserved_before_password (__main__.AutomaticInstaller.test_existing_golden_preserved_before_password) ... ok
+test_existing_output_preserved (__main__.AutomaticInstaller.test_existing_output_preserved) ... ok
+test_installer_restart_after_detach_refused (__main__.AutomaticInstaller.test_installer_restart_after_detach_refused) ... ok
+test_kickstart_restricts_disk_and_identity (__main__.AutomaticInstaller.test_kickstart_restricts_disk_and_identity) ... ok
+test_password_abort_leaves_no_install_media (__main__.AutomaticInstaller.test_password_abort_leaves_no_install_media) ... ok
+test_password_hashing_uses_stdin (__main__.AutomaticInstaller.test_password_hashing_uses_stdin) ... ok
+test_password_mismatch_refused (__main__.AutomaticInstaller.test_password_mismatch_refused) ... ok
+test_pre_guard_accepts_empty_expected_fixture (__main__.AutomaticInstaller.test_pre_guard_accepts_empty_expected_fixture) ... ok
+test_pre_guard_accepts_real_installer_zram_layout (__main__.AutomaticInstaller.test_pre_guard_accepts_real_installer_zram_layout) ... ok
+test_pre_guard_refuses_existing_signature (__main__.AutomaticInstaller.test_pre_guard_refuses_existing_signature) ... ok
+test_pre_guard_refuses_extra_disk (__main__.AutomaticInstaller.test_pre_guard_refuses_extra_disk) ... ok
+test_pre_guard_refuses_unexpected_single_hardware_disk (__main__.AutomaticInstaller.test_pre_guard_refuses_unexpected_single_hardware_disk) ... ok
+test_pre_guard_refuses_wrong_capacity (__main__.AutomaticInstaller.test_pre_guard_refuses_wrong_capacity) ... ok
+test_pre_guard_refuses_wrong_vm_mac (__main__.AutomaticInstaller.test_pre_guard_refuses_wrong_vm_mac) ... ok
+test_pre_guard_still_refuses_extra_disk_with_zram (__main__.AutomaticInstaller.test_pre_guard_still_refuses_extra_disk_with_zram) ... ok
+test_pre_post_and_embedded_finish_syntax (__main__.AutomaticInstaller.test_pre_post_and_embedded_finish_syntax) ... ok
+test_repair_build_failure_preserves_configuration (__main__.AutomaticInstaller.test_repair_build_failure_preserves_configuration) ... Syntax: 9 shell files, 252 command blocks, 12 embedded scripts. Guest execution NOT implied.
+Bestaande media en originele DVD controleren; wachtwoorden blijven behouden.
+ok
+test_repair_preserves_disk_passwords_and_old_iso (__main__.AutomaticInstaller.test_repair_preserves_disk_passwords_and_old_iso) ... Bestaande media en originele DVD controleren; wachtwoorden blijven behouden.
+ok
+test_repair_refuses_already_booted_installed_system (__main__.AutomaticInstaller.test_repair_refuses_already_booted_installed_system) ... ok
+test_repair_refuses_running_guest (__main__.AutomaticInstaller.test_repair_refuses_running_guest) ... ok
+test_repair_rejects_modified_old_media (__main__.AutomaticInstaller.test_repair_rejects_modified_old_media) ... Installatiemedia hersteld. VM-disk en gekozen wachtwoorden behouden. Start met install-rocky.py start --root ...
+Bestaande media en originele DVD controleren; wachtwoorden blijven behouden.
+ok
+test_running_vm_refused_without_edit (__main__.AutomaticInstaller.test_running_vm_refused_without_edit) ... ok
+test_105_tasks_in_manual_matrix (__main__.Content.test_105_tasks_in_manual_matrix) ... ok
+test_answer_coverage (__main__.Content.test_answer_coverage) ... ok
+test_no_old_errors (__main__.Content.test_no_old_errors) ... ok
+test_task_interactions (__main__.Content.test_task_interactions) ... ok
+test_uid_regex_counterexample (__main__.Content.test_uid_regex_counterexample) ... ok
+test_at_allow_extra_user (__main__.Grader.test_at_allow_extra_user) ... ok
+test_bind_same_inode_and_device (__main__.Grader.test_bind_same_inode_and_device) ... ok
+test_error_not_pass (__main__.Grader.test_error_not_pass) ... ok
+test_firewall_runtime_and_permanent (__main__.Grader.test_firewall_runtime_and_permanent) ... ok
+test_ip_false_positive (__main__.Grader.test_ip_false_positive) ... ok
+test_module_name_field (__main__.Grader.test_module_name_field) ... ok
+test_no_eval_or_mutation (__main__.Grader.test_no_eval_or_mutation) ... ok
+test_numeric_exact (__main__.Grader.test_numeric_exact) ... ok
+test_port_exact (__main__.Grader.test_port_exact) ... ok
+test_swap_wrong_device_or_priority (__main__.Grader.test_swap_wrong_device_or_priority) ... ok
+test_all_layouts (__main__.Host.test_all_layouts) ... Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpepnen9fu/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+bravo: ready. Start, seed, shut down, snapshot.
+charlie: cloning (may take several minutes)
+charlie: ready. Start, seed, shut down, snapshot.
+delta: cloning (may take several minutes)
+delta: ready. Start, seed, shut down, snapshot.
+echo: cloning (may take several minutes)
+echo: ready. Start, seed, shut down, snapshot.
+foxtrot: cloning (may take several minutes)
+ok
+test_duplicate_key_rejected (__main__.Host.test_duplicate_key_rejected) ... ok
+test_external_disk_refused (__main__.Host.test_external_disk_refused) ... ok
+test_hardware_resume (__main__.Host.test_hardware_resume) ... foxtrot: ready. Start, seed, shut down, snapshot.
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp19bdsj1k/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp0tu5v7up/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp4753xjp1/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_legacy_create_and_reset_refused (__main__.Host.test_legacy_create_and_reset_refused) ... bravo: ready. Start, seed, shut down, snapshot.
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: existing ready clone preserved; use status/start
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp2xhttv7w/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_lock_direct_edit_refused (__main__.Host.test_lock_direct_edit_refused) ... ok
+test_manifest_mac_injection_refused (__main__.Host.test_manifest_mac_injection_refused) ... ok
+test_operation_lock_exclusive (__main__.Host.test_operation_lock_exclusive) ... ok
+test_repeat_preserves_ready (__main__.Host.test_repeat_preserves_ready) ... bravo: ready. Start, seed, shut down, snapshot.
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmphzcz8ujx/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpt213cu36/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmptbl72cju/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpxw9nq0aa/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_running_golden_refused (__main__.Host.test_running_golden_refused) ... ok
+test_running_snapshot_refused (__main__.Host.test_running_snapshot_refused) ... bravo: ready. Start, seed, shut down, snapshot.
+alpha: existing ready clone preserved; use status/start
+bravo: existing ready clone preserved; use status/start
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp5xi932fe/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpo8c29o1n/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_second_clone_resume (__main__.Host.test_second_clone_resume) ... bravo: ready. Start, seed, shut down, snapshot.
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp308l2k4j/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+alpha: existing ready clone preserved; use status/start
+bravo: cloning (may take several minutes)
+ok
+test_seed_reconciliation_without_password (__main__.Host.test_seed_reconciliation_without_password) ... bravo: ready. Start, seed, shut down, snapshot.
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpdq92hqiu/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_seed_roles_and_marker_order (__main__.Host.test_seed_roles_and_marker_order) ... ok
+test_snapshot_lock_handled_by_fusion (__main__.Host.test_snapshot_lock_handled_by_fusion) ... bravo: ready. Start, seed, shut down, snapshot.
+Guest completion reconciled
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpp15qw9t8/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpvybfq6dq/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_state_symlink_refused (__main__.Host.test_state_symlink_refused) ... ok
+test_stderr_credentials_redacted (__main__.Host.test_stderr_credentials_redacted) ... ok
+test_suspended_refused (__main__.Host.test_suspended_refused) ... ok
+test_template_repeat_preserved (__main__.Host.test_template_repeat_preserved) ... ok
+test_timeout_credentials_redacted (__main__.Host.test_timeout_credentials_redacted) ... ok
+test_unknown_vmx_not_silently_erased (__main__.Host.test_unknown_vmx_not_silently_erased) ... ok
+test_unowned_pair_refused_before_any_clone (__main__.Host.test_unowned_pair_refused_before_any_clone) ... ok
+test_wrong_capacity_stops (__main__.Host.test_wrong_capacity_stops) ... bravo: ready. Start, seed, shut down, snapshot.
+Reverted. Use start to begin the exam again.
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmp43b1c1lj/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpzm_afnip/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpv883zcvj/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpzbzhk63k/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden already created; preserved
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpzepgl6d8/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpj12qy0b8/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpr31c0dvd/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+Golden VM created. Install via Fusion, run guest-golden.sh as root, shut down.
+/var/folders/t0/50qfryj152l_hn6x25vgzyjc0000gp/T/tmpyyo9kvgl/VMs with spaces/rhel10-golden.vmwarevm/rhel10-golden.vmx
+alpha: cloning (may take several minutes)
+alpha: ready. Start, seed, shut down, snapshot.
+bravo: cloning (may take several minutes)
+ok
+test_backup_failure_does_not_claim_success_or_remove_old (__main__.ScriptExecution.test_backup_failure_does_not_claim_success_or_remove_old) ... ok
+test_backup_success_publishes_then_logs (__main__.ScriptExecution.test_backup_success_publishes_then_logs) ... ok
+test_bulk_user_failure_not_success (__main__.ScriptExecution.test_bulk_user_failure_not_success) ... ok
+test_diskwatch_four_branches (__main__.ScriptExecution.test_diskwatch_four_branches) ... ok
+test_svcctl_exit_paths (__main__.ScriptExecution.test_svcctl_exit_paths) ... ok
+test_syscheck_exactly_one_arg (__main__.ScriptExecution.test_syscheck_exactly_one_arg) ... ok
+
+----------------------------------------------------------------------
+Ran 69 tests in 8.198s
+
+OK
+bravo: ready. Start, seed, shut down, snapshot.

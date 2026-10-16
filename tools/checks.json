@@ -1,0 +1,2518 @@
+{
+  "1": {
+    "alpha": [
+      {
+        "task": 3,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T3; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 4,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "alpha.lab.local",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 192.168.100.10",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "192.168.100.10",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd00::10",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd00::10",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T4; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 5,
+        "checks": [
+          {
+            "label": "Runtime ssh",
+            "argv": [
+              "firewall-cmd",
+              "--zone=public",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "ssh",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Runtime http",
+            "argv": [
+              "firewall-cmd",
+              "--zone=public",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "http",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent ssh",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=public",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "ssh",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent http",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=public",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "http",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Runtime 5900-5910/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--zone=internal",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "5900-5910/tcp",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent 5900-5910/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=internal",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "5900-5910/tcp",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T5; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 6,
+        "checks": [
+          {
+            "label": "UID alice",
+            "argv": [
+              "id",
+              "-u",
+              "alice"
+            ],
+            "match": "equal",
+            "expected": "1050",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID bob",
+            "argv": [
+              "id",
+              "-u",
+              "bob"
+            ],
+            "match": "equal",
+            "expected": "1051",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID carol",
+            "argv": [
+              "id",
+              "-u",
+              "carol"
+            ],
+            "match": "equal",
+            "expected": "1052",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID dave",
+            "argv": [
+              "id",
+              "-u",
+              "dave"
+            ],
+            "match": "equal",
+            "expected": "1053",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T6; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 7,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T7; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 8,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T8; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 9,
+        "checks": [
+          {
+            "label": "Permissions /data/devshare",
+            "argv": [
+              "stat",
+              "-c",
+              "%a %U:%G",
+              "/data/devshare"
+            ],
+            "match": "equal",
+            "expected": "3770 alice:developers",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T9; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 10,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T10; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 11,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T11; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 12,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T12; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 13,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/rhel10iso",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/rhel10iso",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/rhel10iso",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T13; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 14,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T14; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 15,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T15; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 22,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/nfs_shared",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/nfs_shared",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/nfs_shared",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/nfs_ro",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/nfs_ro",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/nfs_ro",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T22; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 23,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T23; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 24,
+        "checks": [
+          {
+            "label": "Permissions /var/tmp/badperms",
+            "argv": [
+              "stat",
+              "-c",
+              "%a %U:%G",
+              "/var/tmp/badperms"
+            ],
+            "match": "equal",
+            "expected": "640 bob:developers",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T24; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 25,
+        "checks": [
+          {
+            "label": "chronyd is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "chronyd"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "chronyd is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "chronyd"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T25; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 26,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T26; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 27,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T27; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 28,
+        "checks": [
+          {
+            "label": "rsyslog is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "rsyslog"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "rsyslog is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "rsyslog"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T28; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 29,
+        "checks": [
+          {
+            "label": "hourly-check.timer is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "hourly-check.timer"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "hourly-check.timer is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "hourly-check.timer"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T29; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 30,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T30; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 31,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T31; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 32,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T32; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 33,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost/"
+            ],
+            "match": "equal",
+            "expected": "Hello RHCSA",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "SELinux runtime",
+            "argv": [
+              "getenforce"
+            ],
+            "match": "equal",
+            "expected": "Enforcing",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T33; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 34,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T34; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 35,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost:8080/"
+            ],
+            "match": "equal",
+            "expected": "Welcome to Alice's Containerized Web Server!",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T35; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ],
+    "bravo": [
+      {
+        "task": 1,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T1; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 2,
+        "checks": [
+          {
+            "label": "Default target",
+            "argv": [
+              "systemctl",
+              "get-default"
+            ],
+            "match": "equal",
+            "expected": "multi-user.target",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T2; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 4,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "bravo.lab.local",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 192.168.100.20",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "192.168.100.20",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd00::20",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd00::20",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T4; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 10,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T10; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 11,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T11; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 12,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T12; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 16,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T16; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 17,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/xfs_data",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/xfs_data",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/xfs_data",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/ext4_data",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/ext4_data",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/ext4_data",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T17; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 18,
+        "checks": [
+          {
+            "label": "Swap device AND priority",
+            "argv": [
+              "swapon",
+              "--show=NAME,PRIO",
+              "--json"
+            ],
+            "match": "swap",
+            "expected": {
+              "name": "/dev/nvme0n2p2",
+              "prio": 10
+            },
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T18; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 19,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/lv_data",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/lv_data",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/lv_data",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/lv_logs",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/lv_logs",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/lv_logs",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact PE bytes",
+            "argv": [
+              "vgs",
+              "--noheadings",
+              "--units",
+              "b",
+              "--nosuffix",
+              "-o",
+              "vg_extent_size",
+              "vg_lab"
+            ],
+            "match": "numeric",
+            "expected": 16777216,
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T19; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 20,
+        "checks": [
+          {
+            "label": "Exact LV bytes",
+            "argv": [
+              "lvs",
+              "--noheadings",
+              "--units",
+              "b",
+              "--nosuffix",
+              "-o",
+              "lv_size",
+              "vg_lab/lv_data"
+            ],
+            "match": "numeric",
+            "expected": 1073741824,
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T20; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 21,
+        "checks": [
+          {
+            "label": "nfs-server is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "nfs-server is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T21; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 25,
+        "checks": [
+          {
+            "label": "chronyd is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "chronyd"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "chronyd is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "chronyd"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T25; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 28,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T28; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 33,
+        "checks": [
+          {
+            "label": "SELinux runtime",
+            "argv": [
+              "getenforce"
+            ],
+            "match": "equal",
+            "expected": "Permissive",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-1-opdrachten.md T33; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ]
+  },
+  "2": {
+    "charlie": [
+      {
+        "task": 1,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T1; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 3,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T3; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 4,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "charlie.ex200.lab",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 10.20.30.11",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "10.20.30.11",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd42::11",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd42::11",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T4; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 5,
+        "checks": [
+          {
+            "label": "Runtime ssh",
+            "argv": [
+              "firewall-cmd",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "ssh",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Runtime https",
+            "argv": [
+              "firewall-cmd",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "https",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Runtime dns",
+            "argv": [
+              "firewall-cmd",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "dns",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Runtime 9000-9010/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--zone=labzone",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "9000-9010/tcp",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent ssh",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "ssh",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent https",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "https",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent dns",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=labzone",
+              "--list-services"
+            ],
+            "match": "token",
+            "expected": "dns",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent 9000-9010/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=labzone",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "9000-9010/tcp",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T5; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 6,
+        "checks": [
+          {
+            "label": "UID emma",
+            "argv": [
+              "id",
+              "-u",
+              "emma"
+            ],
+            "match": "equal",
+            "expected": "2100",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID frank",
+            "argv": [
+              "id",
+              "-u",
+              "frank"
+            ],
+            "match": "equal",
+            "expected": "2101",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID gina",
+            "argv": [
+              "id",
+              "-u",
+              "gina"
+            ],
+            "match": "equal",
+            "expected": "2102",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID henry",
+            "argv": [
+              "id",
+              "-u",
+              "henry"
+            ],
+            "match": "equal",
+            "expected": "2103",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T6; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 7,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T7; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 8,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T8; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 9,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T9; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 10,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T10; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 11,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T11; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 12,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T12; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 13,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T13; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 14,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T14; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 15,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T15; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 16,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T16; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 17,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/charliexfs",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/charliexfs",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/charliexfs",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/usbdata",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/usbdata",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/usbdata",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T17; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 19,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/stripe",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/stripe",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/stripe",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/home2",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/home2",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/home2",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact PE bytes",
+            "argv": [
+              "vgs",
+              "--noheadings",
+              "--units",
+              "b",
+              "--nosuffix",
+              "-o",
+              "vg_extent_size",
+              "vg_lab2"
+            ],
+            "match": "numeric",
+            "expected": 33554432,
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T19; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 20,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T20; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 22,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/projects",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/projects",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/projects",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact mountpoint /mnt/archive",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/archive",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/archive",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T22; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 23,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T23; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 24,
+        "checks": [
+          {
+            "label": "Permissions /opt/finance",
+            "argv": [
+              "stat",
+              "-c",
+              "%a %U:%G",
+              "/opt/finance"
+            ],
+            "match": "equal",
+            "expected": "2750 gina:ops",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permissions /opt/finance/private",
+            "argv": [
+              "stat",
+              "-c",
+              "%a %U:%G",
+              "/opt/finance/private"
+            ],
+            "match": "equal",
+            "expected": "700 gina:ops",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T24; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 25,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T25; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 26,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T26; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 27,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T27; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 28,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T28; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 29,
+        "checks": [
+          {
+            "label": "labhealth.timer is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "labhealth.timer"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "labhealth.timer is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "labhealth.timer"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T29; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 30,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T30; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 31,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T31; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 32,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T32; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 33,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost/"
+            ],
+            "match": "equal",
+            "expected": "Site1 charlie",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "SELinux runtime",
+            "argv": [
+              "getenforce"
+            ],
+            "match": "equal",
+            "expected": "Enforcing",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T33; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 34,
+        "checks": [
+          {
+            "label": "Runtime 2222/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--zone=labzone",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "2222/tcp",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Permanent 2222/tcp",
+            "argv": [
+              "firewall-cmd",
+              "--permanent",
+              "--zone=labzone",
+              "--list-ports"
+            ],
+            "match": "token",
+            "expected": "2222/tcp",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T34; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 35,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost:9090/"
+            ],
+            "match": "equal",
+            "expected": "Emma Nginx OK",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T35; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ],
+    "delta": [
+      {
+        "task": 2,
+        "checks": [
+          {
+            "label": "Default target",
+            "argv": [
+              "systemctl",
+              "get-default"
+            ],
+            "match": "equal",
+            "expected": "graphical.target",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T2; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 4,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "delta.ex200.lab",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 10.20.30.12",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "10.20.30.12",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd42::12",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd42::12",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T4; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 10,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T10; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 11,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T11; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 12,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T12; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 18,
+        "checks": [
+          {
+            "label": "Swap device AND priority",
+            "argv": [
+              "swapon",
+              "--show=NAME,PRIO",
+              "--json"
+            ],
+            "match": "swap",
+            "expected": {
+              "name": "/swap/extraswap.img",
+              "prio": 20
+            },
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T18; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 21,
+        "checks": [
+          {
+            "label": "nfs-server is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "nfs-server is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T21; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 25,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-2-opdrachten.md T25; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ]
+  },
+  "3": {
+    "echo": [
+      {
+        "task": 3,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T3; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 4,
+        "checks": [
+          {
+            "label": "labdata is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "labdata"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "labdata is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "labdata"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T4; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 5,
+        "checks": [
+          {
+            "label": "Effective Restart",
+            "argv": [
+              "systemctl",
+              "show",
+              "sshd",
+              "-p",
+              "Restart",
+              "--value"
+            ],
+            "match": "equal",
+            "expected": "on-failure",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Effective RestartUSec",
+            "argv": [
+              "systemctl",
+              "show",
+              "sshd",
+              "-p",
+              "RestartUSec",
+              "--value"
+            ],
+            "match": "equal",
+            "expected": "30s",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Effective Description",
+            "argv": [
+              "systemctl",
+              "show",
+              "sshd",
+              "-p",
+              "Description",
+              "--value"
+            ],
+            "match": "equal",
+            "expected": "SSH Daemon (lab-tuned)",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T5; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 6,
+        "checks": [
+          {
+            "label": "Nonempty /root/redir_out.txt",
+            "argv": [
+              "cat",
+              "/root/redir_out.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/redir_err.txt",
+            "argv": [
+              "cat",
+              "/root/redir_err.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/redir_both.txt",
+            "argv": [
+              "cat",
+              "/root/redir_both.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/df_report.txt",
+            "argv": [
+              "cat",
+              "/root/df_report.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/notes.txt",
+            "argv": [
+              "cat",
+              "/root/notes.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T6; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 7,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T7; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 8,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T8; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 9,
+        "checks": [
+          {
+            "label": "Nonempty /root/compression.txt",
+            "argv": [
+              "cat",
+              "/root/compression.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/archive_list.txt",
+            "argv": [
+              "cat",
+              "/root/archive_list.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T9; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 10,
+        "checks": [
+          {
+            "label": "Nonempty /root/docs_answers.txt",
+            "argv": [
+              "cat",
+              "/root/docs_answers.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T10; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 11,
+        "checks": [
+          {
+            "label": "UID emma",
+            "argv": [
+              "id",
+              "-u",
+              "emma"
+            ],
+            "match": "equal",
+            "expected": "3100",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID noah",
+            "argv": [
+              "id",
+              "-u",
+              "noah"
+            ],
+            "match": "equal",
+            "expected": "3101",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "UID oscar",
+            "argv": [
+              "id",
+              "-u",
+              "oscar"
+            ],
+            "match": "equal",
+            "expected": "3102",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T11; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 12,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T12; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 13,
+        "checks": [
+          {
+            "label": "Permissions /srv/shared/data",
+            "argv": [
+              "stat",
+              "-c",
+              "%a %U:%G",
+              "/srv/shared/data"
+            ],
+            "match": "equal",
+            "expected": "2770 emma:research",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T13; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 14,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T14; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 15,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "echo.ex200.net",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 172.16.40.21",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "172.16.40.21",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd10::21",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd10::21",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T15; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 16,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T16; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 17,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/dvd",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/dvd",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/dvd",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T17; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 18,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T18; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 19,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T19; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 20,
+        "checks": [
+          {
+            "label": "Nonempty /root/gpt_layout.txt",
+            "argv": [
+              "cat",
+              "/root/gpt_layout.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Nonempty /root/nvme0n2-parttable.bak",
+            "argv": [
+              "cat",
+              "/root/nvme0n2-parttable.bak"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T20; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 21,
+        "checks": [
+          {
+            "label": "Exact mountpoint /mnt/shrink",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/mnt/shrink",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/mnt/shrink",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Exact LV bytes",
+            "argv": [
+              "lvs",
+              "--noheadings",
+              "--units",
+              "b",
+              "--nosuffix",
+              "-o",
+              "lv_size",
+              "vg_ex3/lv_shrink"
+            ],
+            "match": "numeric",
+            "expected": 2147483648,
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T21; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 26,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T26; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 27,
+        "checks": [
+          {
+            "label": "Nonempty /root/j5.txt",
+            "argv": [
+              "cat",
+              "/root/j5.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T27; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 28,
+        "checks": [
+          {
+            "label": "Sysctl net.ipv4.ip_forward",
+            "argv": [
+              "sysctl",
+              "-n",
+              "net.ipv4.ip_forward"
+            ],
+            "match": "equal",
+            "expected": "1",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Sysctl vm.swappiness",
+            "argv": [
+              "sysctl",
+              "-n",
+              "vm.swappiness"
+            ],
+            "match": "equal",
+            "expected": "20",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Sysctl kernel.pid_max",
+            "argv": [
+              "sysctl",
+              "-n",
+              "kernel.pid_max"
+            ],
+            "match": "equal",
+            "expected": "65536",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T28; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 29,
+        "checks": [
+          {
+            "label": "Exact at allowlist",
+            "argv": [
+              "cat",
+              "/etc/at.allow"
+            ],
+            "match": "equal",
+            "expected": "emma",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Active cron entry",
+            "argv": [
+              "python3",
+              "-c",
+              "from pathlib import Path; print('\\n'.join(x.strip() for x in Path('/etc/cron.d/labreport').read_text().splitlines() if x.strip() and not x.lstrip().startswith('#')))"
+            ],
+            "match": "equal",
+            "expected": "45 5 * * 1,4 emma /usr/local/bin/labreport.sh",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T29; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 30,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T30; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 31,
+        "checks": [
+          {
+            "label": "Nonempty /root/diskwatch_tests.txt",
+            "argv": [
+              "cat",
+              "/root/diskwatch_tests.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T31; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 32,
+        "checks": [
+          {
+            "label": "Nonempty /var/log/userreport.txt",
+            "argv": [
+              "cat",
+              "/var/log/userreport.txt"
+            ],
+            "match": "nonempty",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T32; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 33,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost:8404/"
+            ],
+            "match": "equal",
+            "expected": "Echo Intranet OK",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "SELinux runtime",
+            "argv": [
+              "getenforce"
+            ],
+            "match": "equal",
+            "expected": "Enforcing",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T33; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 34,
+        "checks": [
+          {
+            "label": "Module name field",
+            "argv": [
+              "semodule",
+              "-l"
+            ],
+            "match": "module",
+            "expected": "labhttpd",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T34; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 35,
+        "checks": [
+          {
+            "label": "HTTP body (local only)",
+            "argv": [
+              "curl",
+              "--fail",
+              "--silent",
+              "--show-error",
+              "--max-time",
+              "10",
+              "http://localhost:9191/"
+            ],
+            "match": "equal",
+            "expected": "Echo Container OK",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T35; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ],
+    "foxtrot": [
+      {
+        "task": 1,
+        "checks": [
+          {
+            "label": "No failed mount units",
+            "argv": [
+              "systemctl",
+              "--failed",
+              "--type=mount",
+              "--no-legend",
+              "--no-pager"
+            ],
+            "match": "equal",
+            "expected": "",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T1; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 2,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T2; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 15,
+        "checks": [
+          {
+            "label": "Hostname",
+            "argv": [
+              "hostnamectl",
+              "--static"
+            ],
+            "match": "equal",
+            "expected": "foxtrot.ex200.net",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP 172.16.40.22",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "172.16.40.22",
+            "valid_rc": [
+              0
+            ]
+          },
+          {
+            "label": "Exact IP fd10::22",
+            "argv": [
+              "ip",
+              "-j",
+              "addr",
+              "show"
+            ],
+            "match": "json-address",
+            "expected": "fd10::22",
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T15; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 22,
+        "checks": [
+          {
+            "label": "Swap device AND priority",
+            "argv": [
+              "swapon",
+              "--show=NAME,PRIO",
+              "--json"
+            ],
+            "match": "swap",
+            "expected": {
+              "name": "/dev/nvme0n2p1",
+              "prio": 5
+            },
+            "valid_rc": [
+              0
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T22; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 23,
+        "checks": [
+          {
+            "label": "Exact mountpoint /data/vault",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/data/vault",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/data/vault",
+            "valid_rc": [
+              0,
+              1
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T23; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 24,
+        "checks": [
+          {
+            "label": "Exact mountpoint /opt/app/data",
+            "argv": [
+              "findmnt",
+              "--mountpoint",
+              "/opt/app/data",
+              "-n",
+              "-o",
+              "TARGET"
+            ],
+            "match": "equal",
+            "expected": "/opt/app/data",
+            "valid_rc": [
+              0,
+              1
+            ]
+          },
+          {
+            "label": "Same payload device and inode through bind mount",
+            "argv": [
+              "stat",
+              "-c",
+              "%d:%i",
+              "/srv/appdata/payload.txt",
+              "/opt/app/data/payload.txt"
+            ],
+            "match": "same-inode"
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T24; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 25,
+        "checks": [
+          {
+            "label": "nfs-server is-active",
+            "argv": [
+              "systemctl",
+              "is-active",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "active",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          },
+          {
+            "label": "nfs-server is-enabled",
+            "argv": [
+              "systemctl",
+              "is-enabled",
+              "nfs-server"
+            ],
+            "match": "equal",
+            "expected": "enabled",
+            "valid_rc": [
+              0,
+              1,
+              3,
+              4
+            ]
+          }
+        ],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T25; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      },
+      {
+        "task": 30,
+        "checks": [],
+        "manual": "Read all subcriteria in Examen-3-opdrachten.md T30; use the matching answer acceptance checks. Verify persistence after normal reboot and service access from peer where applicable."
+      }
+    ]
+  }
+}

@@ -1,0 +1,788 @@
+[
+  {
+    "examen": 1,
+    "taak": 1,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 2,
+    "eerst": [
+      1
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 3,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 4,
+    "eerst": [
+      3
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 5,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 6,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 7,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 8,
+    "eerst": [
+      6,
+      7
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 9,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 10,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 11,
+    "eerst": [
+      1,
+      4,
+      6,
+      7
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 12,
+    "eerst": [
+      11
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 13,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 14,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 15,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 16,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 17,
+    "eerst": [
+      16
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 18,
+    "eerst": [
+      16
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 19,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 20,
+    "eerst": [
+      19
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 21,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 22,
+    "eerst": [
+      21,
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 23,
+    "eerst": [
+      21,
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 24,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 25,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 26,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 27,
+    "eerst": [
+      14
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 28,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 29,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 30,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 31,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 32,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 33,
+    "eerst": [
+      10,
+      14
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 34,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 1,
+    "taak": 35,
+    "eerst": [
+      4,
+      5,
+      6,
+      7
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 1,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 2,
+    "eerst": [
+      1
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 3,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 4,
+    "eerst": [
+      3
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 5,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 6,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 7,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 8,
+    "eerst": [
+      6,
+      7
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 9,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 10,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 11,
+    "eerst": [
+      4,
+      6,
+      7
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 12,
+    "eerst": [
+      11
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 13,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 14,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 15,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 16,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 17,
+    "eerst": [
+      16
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 18,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 19,
+    "eerst": [
+      16
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 20,
+    "eerst": [
+      19
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 21,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 22,
+    "eerst": [
+      21,
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 23,
+    "eerst": [
+      11,
+      21,
+      22
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 24,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 25,
+    "eerst": [
+      4
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 26,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 27,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 28,
+    "eerst": [
+      7,
+      8
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 29,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 30,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 31,
+    "eerst": [
+      6
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 32,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 33,
+    "eerst": [
+      13
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 34,
+    "eerst": [
+      5,
+      11,
+      33
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 2,
+    "taak": 35,
+    "eerst": [
+      4,
+      5,
+      6,
+      23
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 1,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 2,
+    "eerst": [
+      1
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 3,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 4,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 5,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 6,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 7,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 8,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 9,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 10,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 11,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 12,
+    "eerst": [
+      11
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 13,
+    "eerst": [
+      11
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 14,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 15,
+    "eerst": [
+      1
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 16,
+    "eerst": [
+      15,
+      33
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 17,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 18,
+    "eerst": [
+      17
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 19,
+    "eerst": [
+      17
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 20,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 21,
+    "eerst": [
+      20
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 22,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 23,
+    "eerst": [
+      22
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 24,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 25,
+    "eerst": [
+      15
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 26,
+    "eerst": [
+      11,
+      15,
+      25
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 27,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 28,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 29,
+    "eerst": [
+      11
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 30,
+    "eerst": [
+      15
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 31,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 32,
+    "eerst": [],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 33,
+    "eerst": [
+      15
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 34,
+    "eerst": [
+      33
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  },
+  {
+    "examen": 3,
+    "taak": 35,
+    "eerst": [
+      11,
+      15
+    ],
+    "controle": "documentreview; geen volledige guest-uitvoering"
+  }
+]

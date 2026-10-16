@@ -1,0 +1,4 @@
+
+Checking kickstart file /private/tmp/rhcsa-auto-zramfix.ks
+
+pykickstart 3.78 / RHEL10: exit 0; zramfix revision. Pre/post not executed by schema validator.

@@ -1,0 +1,692 @@
+[
+  {
+    "id": "C01",
+    "severity": "BLOKKADE",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 159,
+    "title": "Een half aangemaakt examenpaar kan niet worden hervat",
+    "problem": "create weigert het hele paar zodra één bundle bestaat. Na een fout bij bravo blijft alpha staan; opnieuw create geeft dezelfde blokkade. De melding verwijst naar reset, terwijl een nog niet geseede VM geen exam-ready snapshot heeft. Dit is lokaal met een fout bij de tweede clone gereproduceerd.",
+    "correction": "Maak een ontbrekende node afzonderlijk aan. Onderscheid bestaande complete, incomplete en onbekende bundles; toon per node de vervolgstap. Bestaande voltooide nodes blijven behouden.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C02",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 121,
+    "title": "Aanmaken heeft geen betrouwbare herstelstaat",
+    "problem": "template schrijft ownership vóór de disk/VMX compleet is. create schrijft metadata vóór alle disks en seedbestanden klaar zijn. add-disk schrijft disk, VMX, metadata en seed in aparte stappen. Een onderbreking laat een tussenstaat achter die de volgende run niet gericht kan herstellen.",
+    "correction": "Leg fasen vast met atomische metadata, controleer de werkelijke disk/VMX-staat en maak hervatten mogelijk. Verwijder niet automatisch bestaande VM-data.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C03",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 269,
+    "title": "Seedmarker wordt te vroeg gezet",
+    "problem": "De marker /etc/rhcsa-fusion-seeded komt vóór chpasswd en vmtoolsd guestinfo. Als een laatste stap faalt, weigert het gastscript elke herhaling terwijl de Mac seeded=False houdt. Ook na een fout tijdens profielverwijdering ontbreekt een herstelpad.",
+    "correction": "Schrijf een completion-marker pas na alle controles. Bewaar daarnaast een progress/error-record; laat een statusactie de gast- en hoststaat vergelijken en herstel een mislukte fase gericht.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C04",
+    "severity": "ONZEKER",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 214,
+    "title": "Unieke machine-ID is niet bewezen",
+    "problem": "Het script verwijdert de ID en roept systemd-machine-id-setup aan in de draaiende gast. Die tool kan /run/machine-id of een D-Bus-ID hergebruiken. Golden laat bovendien de D-Bus-ID bestaan. PID 1 en journald werken al met de oude identiteit. De mocktest controleert alleen dat tekst in het script staat.",
+    "correction": "Gebruik een clone-generalizationprocedure vóór de eerste gewone boot, of initialiseert expliciet een nieuwe ID offline. Vergelijk daarna golden/alpha/bravo-ID en SSH-key fingerprints echt; schrijf geen bewijs van unieke IDs zonder die check.",
+    "source": "https://raw.githubusercontent.com/systemd/systemd/main/man/systemd-machine-id-setup.xml"
+  },
+  {
+    "id": "C05",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/guest-golden.sh",
+    "line": 42,
+    "title": "Verwijderen van wheel maakt student niet noodzakelijk niet-sudo",
+    "problem": "Een bestaande expliciete sudoers-regel voor student blijft staan. De historische golden-instructie maakt precies student ALL=(ALL) NOPASSWD:ALL. Ook andere installatieadmins blijven behouden. De screenshot toont een installatieadmin siebe. De README vraagt wel handmatig opschonen, maar code controleert het resultaat niet.",
+    "correction": "Controleer sudo -l -U student en overige niet-root accounts vóór de exam-ready seed. Verwijder uitsluitend expliciet aangewezen labregels; verwijder gebruikers nooit blind.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C06",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/guest-golden.sh",
+    "line": 28,
+    "title": "Golden-bootstrap kan zijn eigen SSH-verbinding verbreken",
+    "problem": "Alle Ethernet-profielen worden verwijderd voordat de vervangende NAT-verbinding actief is. Via SSH kan de bootstrap middenin afbreken. De README noemt kopiëren via SSH en daarna uitvoeren, zonder duidelijk consolevereiste.",
+    "correction": "Voer deze netwerkfase in de Fusion-console uit, of maak eerst vervangende profielen en schakel gecontroleerd over. Zorg voor een hervatbare bootstrap.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C07",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/guest-golden.sh",
+    "line": 9,
+    "title": "Golden garandeert niet alle gebruikte hulpmiddelen",
+    "problem": "De pakketlijst bevat onder andere geen psmisc (killall), sysstat (pidstat), cpio (RPM-extractie), setroubleshoot-server (sealert) en expliciete man/info-voorzieningen. podman wordt in examen 1 en 2 gebruikt zonder installatieantwoord. openssl is een seed-afhankelijkheid zonder preflight. Een bestaand systeem kan sommige pakketten toevallig al hebben.",
+    "correction": "Splits labinfrastructuur en software-oefeningen. Controleer benodigde binaries vóór elke seed; installeer oefenafhankelijkheden in een expliciete voorbereiding of opdracht. Examenpakketten niet stilzwijgend vooraf oplossen.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C08",
+    "severity": "VERBETERING",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 52,
+    "title": "VMX-parser gooit onbekende regels weg",
+    "problem": "load leest alleen exact gequote key/value-regels; save schrijft alleen die terug. Ongeparseerde regels verdwijnen stilzwijgend. Een fixture met een ongequote regel toont dit; zo’n regel hoeft geen geldige VMware-instelling te zijn. Dit bewijst geen verlies van geldige instellingen in jouw huidige VMX, die gequote waarden gebruikt.",
+    "correction": "Behoud niet-gewijzigde regels, of weiger het bestand vóór wijziging met de concrete ongeparseerde regel. Maak een backup vóór directe VMX-wijzigingen.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C09",
+    "severity": "VERBETERING",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 74,
+    "title": "Ownership en diskcontrole zijn minder streng dan geclaimd",
+    "problem": "Bundle/VMX-symlinks worden geweigerd, maar state-symlinks en externe diskverwijzingen niet. Een tekstmarker garandeert geen onafhankelijke systemdisk. Goldencontrole kijkt alleen naar extra nvme0-slots, niet andere controllers. Seed controleert aantal disks, maar niet alle groottes of de verwachte hardware.",
+    "correction": "Valideer metadata-schema, onafhankelijke clone-diskketen, verwachte controllers, padgrenzen en diskcapaciteit. Rapporteer afwijkingen vóór seed of hardwarewijziging.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C10",
+    "severity": "VERBETERING",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 34,
+    "title": "CLI mist status en diagnostiek",
+    "problem": "Geen status/doctor-action, geen timeout of fase-aanduiding bij langlopende CLI-calls. Een VMrun-storing wordt als losse STOPPED-melding gepresenteerd. De wrapper heet rebuild maar voert create uit. Globale --root moet vóór het subcommando en kan niet via de wrapper worden doorgegeven.",
+    "correction": "Voeg één overzicht toe met running/powered-off/suspended, seedstatus, snapshotstatus, diskindeling en precies de volgende stap. Geef langlopende acties voortgang en gerichte foutmeldingen.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C11",
+    "severity": "ONZEKER",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 143,
+    "title": "Fusion-tijdsynchronisatie kan chrony-oefeningen beïnvloeden",
+    "problem": "De template zet VMware-tijdsynchronisatie aan terwijl meerdere opdrachten chrony als tijdbron testen. Periodieke hypervisorcorrectie is een tweede tijdmechanisme. Niet gemeten in de gasten.",
+    "correction": "Kies een expliciete tijdpolicy voor het lab; controleer VMware Tools time sync en chrony afzonderlijk. Verifieer chrony-selected source, niet alleen de wallclock.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C12",
+    "severity": "GECORRIGEERD",
+    "file": "RHCSA-Lab-Scripts/fusion-lab.py",
+    "line": 330,
+    "title": "Eerdere lockfout is aangepast, maar de tests missen die regressie",
+    "problem": "De actuele controller laat Fusion snapshot/reset zijn eigen locks beheren en blijft running/suspended weigeren. De backup bevat de oude onvoorwaardelijke off-check. De huidige validate.py-test maakt bij snapshot/reset geen lockfixture: hij bewijst de specifieke lockfix dus niet. Tijdens de read-only audit waren alpha en bravo werkelijk running; dan is weigering terecht.",
+    "correction": "Bewaar de aangepaste API-route, voeg een lockfixture voor beide acties toe en een running/suspended-negatief geval. Verwijder echte lockbestanden niet op basis van alleen een GUI-icoon.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "C13",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/guest-network.sh",
+    "line": 16,
+    "title": "Netwerkhulp kan niet opnieuw worden gebruikt",
+    "problem": "De hulp zoekt alleen fusion-lab, hernoemt dat profiel en vindt het daarna bij herhaling niet meer. In examen 3 bestaat na de oplossing al lab3-static. Hij zet bovendien altijd zone public, waarmee een bestaande examen-2 labzone-binding kan verdwijnen.",
+    "correction": "Selecteer profiel op manifest-MAC/UUID en bestaande nodeprofielnaam. Bewaar de zone of accepteer die expliciet; maak de hulp hervatbaar en zeg dat hij een antwoord uitvoert.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A01",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 91,
+    "title": "bravo begint met verkeerde boot target",
+    "problem": "Vraag T2 veronderstelt graphical.target. Alle standaardseeds zetten multi-user.target; bravo wordt niet omgezet naar graphical. De opdracht is daardoor al opgelost bij aanvang.",
+    "correction": "Seed bravo naar graphical.target of wijzig de oefening naar een werkelijk aanwezige verkeerde target. Vermeld dat graphical.target zonder GUI geen bewijs van GUI-installatie is.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A02",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 848,
+    "title": "Vijf antwoordsecties ontbreken in examen 1",
+    "problem": "Geen eigen T6, T8, T11, T12 of T33 in de antwoordsectie. T4 laat hostname/hosts weg; T34 configureert geen Apache-listener. Dit is geen volledige antwoordensleutel.",
+    "correction": "Vul alle vijf antwoorden aan, plus de ontbrekende substappen van bestaande antwoorden. Maak ieder antwoord zelfstandig bruikbaar met host en uitvoerende gebruiker.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A03",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 844,
+    "title": "Veertien antwoordsecties ontbreken in examen 2",
+    "problem": "T4–T12, T17, T18, T19, T26 en T30 hebben geen eigen antwoordsectie. De quick-reference bevat enkele fragmenten, maar geen volledige uitvoering. T13 is één query; T29 één timerexpressie; T31 één passwordgenerator; T32 alleen cron.",
+    "correction": "Schrijf per opdracht een volledige oplossing inclusief bestanden, services, ownership, persistente configuratie en functionele controle. Noem het huidige document geen complete answer key.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A04",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 107,
+    "title": "GRUB-antwoorden passen kernelargs niet betrouwbaar toe",
+    "problem": "Examen 1 T3 en examen 2 T3 wijzigen GRUB_CMDLINE_LINUX maar voeren alleen grub2-mkconfig uit. RHEL 10 gebruikt BLS; voor het overschrijven van BLS-args is --update-bls-cmdline nodig. Timeoutwijzigingen worden wel door gewoon mkconfig verwerkt.",
+    "correction": "Gebruik grub2-mkconfig -o /boot/grub2/grub.cfg --update-bls-cmdline voor bewust gewijzigde GRUB_CMDLINE_LINUX, of grubby voor kernelargs. Controleer na normale reboot /proc/cmdline.",
+    "source": "https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/managing_monitoring_and_updating_the_kernel/configuring-kernel-command-line-parameters"
+  },
+  {
+    "id": "A05",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 140,
+    "title": "Firewallvragen spreken zichzelf tegen",
+    "problem": "Examen 1 T5 voegt runtime 8080 toe en doet daarna reload, waardoor die regel verdwijnt. T35 kan dan lokaal curl slagen zonder bereikbaarheid vanaf bravo. Examen 2 T5 heeft dezelfde volgordefout met een 60-seconden rich rule. Die tijdelijke regels kunnen per definitie niet aan algemene rebootpersistentie voldoen.",
+    "correction": "Sla permanente regels op en reload eerst. Voeg en test tijdelijke regel daarna; toon expliciet verdwijnen na reload/timeout. Voor een blijvend bereikbare container voeg een afzonderlijke permanente poortregel toe.",
+    "source": "https://firewalld.org/documentation/man-pages/firewall-cmd.html"
+  },
+  {
+    "id": "A06",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 193,
+    "title": "Sudo-eisen voor alice zijn onderling onverenigbaar",
+    "problem": "T6 maakt alice lid van sysadmins en developers. T8 geeft sysadmins onbeperkt NOPASSWD sudo en developers dnf/systemctl, maar eist alice alleen useradd/userdel. Sudo-grants zijn aanvullend; een beperkte alice-regel heft de groepsgrants niet op.",
+    "correction": "Verwijder het woord only voor alice, of wijzig vooraf de groepsindeling/eisen. Verifieer werkelijk toegestane commando’s met sudo -l en negatieve tests.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A07",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 859,
+    "title": "login.defs is geen betrouwbare PAM-wachtwoordlengtepolicy",
+    "problem": "T7 leert PASS_MIN_LEN in /etc/login.defs als systeemwijde minimale wachtwoordlengte. Op de PAM-gebaseerde Rocky/RHEL-installatie moet de effectieve pam_pwquality-keten worden gebruikt. carol is bovendien nologin, dus next-login-change kan niet interactief worden gedemonstreerd.",
+    "correction": "Gebruik pwquality-configuratie en controleer authselect/PAM. Test als gewone gebruiker; root omzeilt standaard de policy tenzij enforce_for_root is ingesteld. Maak onderscheid tussen password-age flag en daadwerkelijk kunnen inloggen.",
+    "source": "https://raw.githubusercontent.com/libpwquality/libpwquality/master/doc/man/pam_pwquality.8.pod"
+  },
+  {
+    "id": "A08",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 884,
+    "title": "Examen 1 ISO-mountpoint wordt niet aangemaakt",
+    "problem": "T13 begint met mount /dev/sr0 /mnt/rhel10iso zonder mkdir. Golden/seed maken dat mountpoint niet. Een verse VM geeft mount point does not exist.",
+    "correction": "Maak /mnt/rhel10iso eerst, controleer DVD-inhoud en maak de persistente entry; reload systemd en test gericht met mount /mnt/rhel10iso.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A09",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1071,
+    "title": "Gevraagde swaplabel ontbreekt in antwoord",
+    "problem": "Vraag T18 eist EXTRASWAP. Het antwoord gebruikt mkswap zonder -L. De verwachte free-output suggereert 500 MiB totaal, maar de oorspronkelijke LVM-swap blijft ook actief.",
+    "correction": "Gebruik mkswap -L EXTRASWAP en controleer device, LABEL, UUID en prioriteit op dezelfde swapon-regel. Beschrijf totaal als oorspronkelijke swap plus de extra partitie.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A10",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1164,
+    "title": "LVM-size in vraag en verwachting is onmogelijk met deze PE-grootte",
+    "problem": "Met 16 MiB PE wordt lvcreate -L 500M afgerond op 32 extents: 512 MiB. Het antwoord verwacht 500.00m. Dit verandert de haalbare uitbreiding naar 1 GiB niet.",
+    "correction": "Vraag 512 MiB of leg de afronding uit; verwacht 512 MiB/32 extents en 400 MiB/25 extents. Controleer LV-bytes, niet een gelokaliseerde substring.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A11",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 884,
+    "title": "pvmove verandert striping niet automatisch naar linear",
+    "problem": "De theorie zegt dat --alloc anywhere een tweestripe LV op één PV automatisch lineair maakt. Die vlag staat allocatie van twee stripes op dezelfde PV toe; dat is geen segmenttypeconversie.",
+    "correction": "Verwijder de automatische-linear-claim. Controleer lvs -o lv_name,segtype,stripes,devices na migratie. Gebruik --alloc anywhere bewust voor dit oefengeval; maak geen performanceclaim.",
+    "source": "https://man7.org/linux/man-pages/man8/pvmove.8.html"
+  },
+  {
+    "id": "A12",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 430,
+    "title": "NFS-writevraag heeft geen schrijfbare uitgangstoestand",
+    "problem": "Examen 2 T21 maakt /srv/nfs/projects zonder eigenaar/modebeleid. Een standaard root:root 0755-directory is niet schrijfbaar voor root van de client wegens default root_squash. T22 verwacht toch succes. Examen 3 T25 kiest nobody:nobody 2775; dat helpt gesquashte root, maar creëert geen gezamenlijke normale gebruikersgroep.",
+    "correction": "Leg één bewust gekozen UID/GID- en squashbeleid vast. Controleer serverdirectory DAC, SELinux en exports én echte writes als de bedoelde clientgebruiker. sec=sys is AUTH_SYS en configureert geen Kerberos.",
+    "source": "https://man7.org/linux/man-pages/man5/exports.5.html"
+  },
+  {
+    "id": "A13",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 417,
+    "title": "showmount is geen geldige doorslaggevende NFSv4-only test",
+    "problem": "NFSv4 hoeft het MOUNT-protocol niet aan te bieden. showmount kan mislukken terwijl NFSv4 goed werkt. De opdracht gebruikt deze test bij een v4-only server.",
+    "correction": "Verifieer exportfs -v, /proc/fs/nfsd/versions en een echte vers=4.2 clientmount. Label showmount alleen als MOUNT/v3-gerelateerde aanvullende diagnose.",
+    "source": "https://man7.org/linux/man-pages/man8/showmount.8.html"
+  },
+  {
+    "id": "A14",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1310,
+    "title": "AutoFS-home-oefeningen zijn niet volledig ingericht",
+    "problem": "Examen 1 T23 maakt op bravo autouser zonder expliciete -m, wachtwoord/UID-afstemming en lokale alpha-home op de automountlocatie. ls onder /mnt/autohome bewijst geen loginhome. Examen 2 T23 gebruikt soft voor home-NFS: na retries kunnen I/O-errors optreden. De serverhome-ownership en SELinux NFS-homeboolean ontbreken.",
+    "correction": "Maak homes expliciet, stem UID/GID af, configureer lokaal de juiste home en use_nfs_home_dirs wanneer nodig. Gebruik normaal hard voor home-NFS. Test echte login en bestandswrite; controleer autofs-expiry zonder de mount telkens te benaderen.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A15",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 459,
+    "title": "Permission-repair heeft ontbrekende objecten en groep",
+    "problem": "Examen 1 /tmp/badperms en examen 2 /opt/finance-structuur worden niet door seeds aangemaakt, hoewel de vragen zeggen dat zij al bestaan. Examen 2 gina heeft primaire groep ops: useradd -g ops garandeert geen groep gina. Alleen find voor SUID is als antwoord aanwezig.",
+    "correction": "Seed de beschreven beschadigde objecten. Maak de groep gina expliciet of kies gina:ops. Benoem dat SUID op een shellscript geen privilegeverhoging veroorzaakt, of gebruik een andere oefening.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A16",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 505,
+    "title": "chronyd HUP-theorie is onjuist",
+    "problem": "T27 verwacht dat chronyd na SIGHUP zijn configuratie herleest. De upstreambron registreert SIGHUP als quit-signal. Een service kan daardoor stoppen; een eventuele systemd-herstart bewijst geen reload.",
+    "correction": "Gebruik systemctl restart chronyd na configuratiewijziging. Oefen HUP op een programma dat het documenteert; controleer starttijd/status en daadwerkelijke chrony-bronnen.",
+    "source": "https://raw.githubusercontent.com/mlichvar/chrony/master/util.c ; https://raw.githubusercontent.com/mlichvar/chrony/master/main.c"
+  },
+  {
+    "id": "A17",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 864,
+    "title": "Reinstall garandeert geen herstel van gewijzigde nanorc",
+    "problem": "Een RPM-config(noreplace)-bestand kan gewijzigd blijven bij reinstall. Het antwoord presenteert reinstall als voldoende herstel en verifieert de gerestaureerde inhoud niet. Exact gedrag hangt van het aanwezige nano-RPM af.",
+    "correction": "Inspecteer de RPM-configflags, backup de lokale wijziging, herstel de originele inhoud uit het exacte RPM of verwijder de config gecontroleerd vóór reinstall. Controleer daarna rpm -V nano opnieuw.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A18",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 288,
+    "title": "Rocky-antwoorden gebruiken een Red Hat-media-key",
+    "problem": "Examen 2 T13 en examen 3 T17 verwijzen naar RPM-GPG-KEY-redhat-release op de ISO. Voor een Rocky-DVD hoort de Rocky-signing key te worden gebruikt, niet die van Red Hat. De eerdere platformconversie heeft alleen architectuur/disknamen aangepast.",
+    "correction": "Kies op basis van /etc/os-release de Rocky-10 of Red Hat-key. Inspecteer echte DVD-root en /etc/pki/rpm-gpg; neem geen onbevestigd exact ISO-pad over. Behoud gpgcheck=1 en test een RPM van het DVD-repo.",
+    "source": "https://dl.rockylinux.org/pub/rocky/"
+  },
+  {
+    "id": "A19",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 290,
+    "title": "DNF- en Flatpak-oefeningen hebben onnodige of ontbrekende voorwaarden",
+    "problem": "priority is al een DNF-repooptie; dnf-plugin-priorities is geen noodzakelijke afhankelijkheid. Examen 1 Flatpak run GIMP verwacht een grafische sessie op een minimal guest. Flatpak is standaard system-wide, dus ontbrekend --system is geen fout. Het antwoord is wel onvolledig, de uitvoerende gebruiker/bevoegdheid is onduidelijk en ARM-appbeschikbaarheid is niet gecontroleerd. RPM-only installaties lossen dependencies niet op.",
+    "correction": "Gebruik priority=10/20 direct. Maak GUI-run optioneel of kies een geverifieerde CLI/ARM-app. Gebruik expliciet sudo flatpak --system ... voor system-wide. Benoem online versus offline opdrachten en installeer RPM-afhankelijkheden via dnf waar toegestaan.",
+    "source": "https://dnf.readthedocs.io/en/latest/conf_ref.html"
+  },
+  {
+    "id": "A20",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 515,
+    "title": "Logrotate mist het heropenen van rsyslog-output",
+    "problem": "Het antwoord roteert secure.lab zonder postrotate/HUP (of een bewust gekozen copytruncate). rsyslog kan op de oude inode doorschrijven. Het antwoord geeft ook alleen de rsyslog-regel als losse tekst zonder enable/start/controle.",
+    "correction": "Voeg een passende postrotate systemctl kill -s HUP rsyslog.service toe en test rotatie met een nieuw logger/sudo-event vóór en na rotatie. Gebruik de pakket-eigen syslog-logrotateconfig als voorbeeld.",
+    "source": "https://docs.rsyslog.com/doc/configuration/modules/omfile.html"
+  },
+  {
+    "id": "A21",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 738,
+    "title": "TuneD-theorie is te algemeen voor deze minimal VM",
+    "problem": "Examen 1 beweert dat power-profiles-daemon bovenop tuned alle RHEL-10-systemen beïnvloedt en eist ppd_base_profile. tuned-ppd is een aparte integratielaag; de relevante service hoeft op minimal niet actief te zijn. Examen 2 CPU governor performance is vaak niet bestuurbaar in een Fusion ARM-gast.",
+    "correction": "Controleer aanwezige/actieve tuned-ppd-service vóór extra beleid. Beoordeel het actieve TuneD-profiel na reboot. Maak CPU-governorresultaat conditioneel op beschikbare cpufreq-interface.",
+    "source": "https://github.com/redhat-performance/tuned ; https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/10/html/monitoring_and_managing_system_status_and_performance/optimizing-system-performance-with-tuned"
+  },
+  {
+    "id": "A22",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1621,
+    "title": "at-jobs schrijven als de submitter",
+    "problem": "Examen 1 T29 en examen 3 T29 tonen at zonder sudo terwijl de job naar /var/log schrijft. In een gewone sudo-user-shell wordt de job als die user ingediend en faalt de write later. Meerdere antwoorden mixen sudo met > /root/...; sudo maakt de shellredirection niet root.",
+    "correction": "Geef bij ieder blok aan: rootconsole of gewone gebruiker. Gebruik bijvoorbeeld echo ... | sudo at ... en sudo atq/at -c voor de rootjob, of een bestand in de home van de submitter. Rootbestanden via sudo tee schrijven.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A23",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1797,
+    "title": "Backupscripts kunnen succes melden na falen",
+    "problem": "Examen 1 etcbackup.sh onderdrukt tar-stderr, controleert de exitcode niet, verwijdert oude backups en logt Created ook als tar faalt. Met een mock-tar die exit 2 geeft, is het antwoordscript exit 0 en schrijft het Created. bulk_users.sh meldt ook succes zonder geslaagde useradd/passwd te verifiëren.",
+    "correction": "Controleer iedere relevante exitcode; schrijf eerst een tijdelijk archive, publiceer pas na succes en verwijder oudere backups daarna. Log failure als failure. Houd wachtwoordbestanden en backupfiles met passende mode, en pas retentie expliciet toe.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A24",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1697,
+    "title": "syscheck wijkt af van vraag en ARM-output kan leeg zijn",
+    "problem": "Vraag T30 accepteert één argument en leest CPU-model uit /proc/cpuinfo; antwoord accepteert meerdere en gebruikt lscpu/Model name. ARM hoeft geen x86 Model name te tonen. Zonder match retourneert het cpu-pad een fout zonder duidelijke toelichting.",
+    "correction": "Stem vraag af op platform-neutrale lscpu-output of definieer de juiste ARM /proc/cpuinfo-velden. Test exact één argument, ongeldige invoer en de bedoelde exitcodes.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A25",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 1867,
+    "title": "Quadlet-enable is onjuist",
+    "problem": "Examen 1 T35 gebruikt enable op een gegenereerde Quadlet-service. Die enable-operatie wordt niet ondersteund. Ook de eerdere handmatig gestarte alice_web kan nog de naam/poort bezetten; podman-installatie en overgang naar de unit ontbreken.",
+    "correction": "Installeer podman, laat de handmatige container stoppen/verwijderen, maak de .container met [Install], gebruik daemon-reload en start. Linger als root, usermanager-acties in een echte alice-login. Test na reboot én vanaf bravo.",
+    "source": "https://docs.podman.io/en/stable/markdown/podman-systemd.unit.5.html"
+  },
+  {
+    "id": "A26",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 2 - RHEL 10.md",
+    "line": 1069,
+    "title": "Quadlet-volume is niet gekoppeld aan de containerunit",
+    "problem": "De .container gebruikt een gewone volumenaam, niet emma-nginx.volume, en creëert daardoor geen dependency op de .volume-unit. Het vullen via nginx-image is ongekwalificeerd, mist :Z en gebruikt de image-user om in een nieuw root-owned mountpad te schrijven. Succes is niet gegarandeerd. De bonus vraagt een Quadlet timer maar geeft geen gewone .timer/.service-oplossing.",
+    "correction": "Verwijs naar emma-nginx.volume in Volume=. Start de volume-unit en vul met een bewust gekozen helperuser/image/relabel. Verifieer image-rootpad/UID/ARM-manifest. Gebruik een gewone systemd-user timer met een oneshot restart-service.",
+    "source": "https://docs.podman.io/en/stable/markdown/podman-systemd.unit.5.html"
+  },
+  {
+    "id": "A27",
+    "severity": "BLOKKADE",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 263,
+    "title": "Apache-opdracht komt vóór reparatie van dezelfde gebroken service",
+    "problem": "Echo seed laat Listen 8404 bestaan zonder SELinux-portlabel. T16 start die Apache op poort 80; T33 repareert pas 8404. Eén ongeldig Listen kan de hele serverstart blokkeren. T16 kan daardoor niet onafhankelijk worden uitgevoerd in de gegeven volgorde.",
+    "correction": "Voer T33 vóór T16 uit, of scheid de webinstantie voor deze oefeningen. Maak de volgorde expliciet zonder de diagnose weg te geven.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A28",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 165,
+    "title": "Task 8 kan Task 11 al blokkeren",
+    "problem": "T8 laat emma alvast aanmaken; T11 voert daarna useradd -u 3100 -g research emma uit. Als de kandidaat de eerdere instructie volgt, bestaat emma al met mogelijk verkeerde UID/home/skeleton en faalt useradd.",
+    "correction": "Maak emma pas in T11 en laat T8 met numerieke UID werken of verplaats het ownership-subdeel na T11. Geen onuitgesproken tijdelijke user die een latere taak breekt.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A29",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 770,
+    "title": "UID-regex matcht ook de GID",
+    "problem": "Het antwoord selecteert iedere viercijferige dubbelepuntwaarde. Een user UID 99, GID 3100 wordt onterecht opgenomen. De IPv4-regex accepteert ook octetten boven 255. Beide regex-antwoorden zijn te ruim voor de vraag.",
+    "correction": "Gebruik voor UID: grep -E ^[^:]+:[^:]*:[0-9]{4}: /etc/passwd. Definieer of IPv4 slechts syntactische patronen of valide adressen betekent en valideer desnoods de vier octetten. Fixture bevat aantoonbaar een foutpositieve UID.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A30",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 845,
+    "title": "Home-verplaatsing mist parent, labels en inlogvoorwaarden",
+    "problem": "De parent /srv/homes wordt niet aangemaakt. restorecon op een niet-gemapt /srv-home garandeert geen user_home_dir_t/homeinhoudlabels. Nieuwe accounts hebben geen ingesteld wachtwoord, maar login en sudo worden wel gevraagd.",
+    "correction": "Maak parent, configureer persistent fcontext-equivalence /home naar /srv/homes, verhuis, restorecon en test met noah. Stel een expliciet oefenwachtwoord of keylogin in voor accounts die moeten authenticeren.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A31",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 122,
+    "title": "systemctl show gebruikt de verkeerde property en laadt sshd niet opnieuw",
+    "problem": "Unitdirective heet RestartSec, maar de show-property heet RestartUSec. Vraag, antwoord en grader gebruiken RestartSec. Alleen daemon-reload past bovendien het draaiende sshd-proces niet opnieuw toe; de runtimeverificatie hoort na restart.",
+    "correction": "Behoud RestartSec=30 in het drop-in. Gebruik systemctl restart sshd en systemctl show sshd -p Restart -p RestartUSec -p Description. Test RestartUSec=30s.",
+    "source": "https://raw.githubusercontent.com/systemd/systemd/main/src/core/dbus-service.c"
+  },
+  {
+    "id": "A32",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1137,
+    "title": "Swap-vervanging hardcodeert RHEL-VG op Rocky",
+    "problem": "T22 gebruikt /dev/mapper/rhel-swap en /dev/rhel/swap. Jouw eerdere lsblk toont rl-swap. Op Rocky met VG rl falen deze stappen; een andere custom VG is eveneens mogelijk.",
+    "correction": "Lees de huidige device-naam uit swapon --show en identificeer bewust het oorspronkelijke device. Gebruik die naam; controleer fstab en eventuele resume/rd.lvm.lv=...swap bootargs voordat een swap-LV wordt verwijderd.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A33",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1224,
+    "title": "AutoFS-antwoord mount op verkeerd pad",
+    "problem": "Vraag eist /net/team. Antwoord zet /net/team als indirect-maproot en gebruikt key team: resultaat /net/team/team. De uitleg bevestigt dat verkeerde pad.",
+    "correction": "Gebruik master /net /etc/auto.team --timeout=45, map team -fstype=nfs4,rw foxtrot.ex200.net:/export/team, en test ls /net/team. Een direct map is alleen een alternatief als de vraag dat toestaat.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A34",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1253,
+    "title": "Journalretentie is geen harde totale cap",
+    "problem": "Vacuum raakt alleen gearchiveerde journals. Zonder --rotate kan de actieve file buiten het opruimen vallen. SystemMaxUse=200M geldt voor persistent storage; antwoord zet Storage niet expliciet. Files/grote actieve journals kunnen de exacte cap tijdelijk overschrijden.",
+    "correction": "Configureer Storage=persistent, flush, relevante SystemMaxUse/SystemMaxFileSize, restart en gebruik journalctl --rotate --vacuum-size=200M. Leg uit dat dit retentiebeleid is en geen byte-exacte harde filesystemquota.",
+    "source": "https://www.freedesktop.org/software/systemd/man/latest/journalctl.html"
+  },
+  {
+    "id": "A35",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 433,
+    "title": "Cron vraagt een script dat nergens wordt gemaakt",
+    "problem": "T29 verwijst naar labreport.sh; seed en antwoord maken dat bestand niet. De grader zoekt alleen emma in de cronregel, dus deze niet-werkende job kan PASS krijgen.",
+    "correction": "Geef het script als bestaande voorbereidende fixture of laat het expliciet schrijven, executable maken en als emma testen. Enable crond en beoordeel echte output.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A36",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1364,
+    "title": "diskwatch test niet alle gevraagde paden",
+    "problem": "Vraag eist één argument dat een momenteel gemount pad is, plus tests van usage/not-mounted/OK/CRITICAL. Twee gewone filesystems / en /boot hoeven geen CRITICAL te leveren. Een positional findmnt-zoekterm is minder expliciet dan --mountpoint.",
+    "correction": "Gebruik findmnt --mountpoint \"$target\" voor exacte mountpointcheck. Test CRITICAL op een kleine wegwerp-tmpfs of met een gecontroleerde df-fixture; vul niet de systeemdisk.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A37",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 470,
+    "title": "userreport telt niet noodzakelijk geldige login-shells",
+    "problem": "Alle shells die niet exact /sbin/nologin of /bin/false eindigen worden als geldig geteld, waaronder niet-bestaande paden en andere nologin/false-varianten. Vraagdefinitie en implementatie lopen uiteen.",
+    "correction": "Definieer geldige shell: executable en/of opgenomen in /etc/shells, met nologin/false uitgesloten, of wijzig de vraag naar de simpele bedoelde telling. Primary-groupleden ontbreken terecht in veld 4, maar zijn niet gelijk aan een werkelijk lege groep.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A38",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1439,
+    "title": "SELinux-denialgenerator en audit2allow-invoer zijn onbetrouwbaar",
+    "problem": "Gewone cp naar het webpad behoudt niet standaard de broncontext; comment zegt ten onrechte admin_home_t. anaconda-ks.cfg is vaak 0600, wat DAC-failure oplevert in plaats van de bedoelde AVC. ausearch recent bevat ook eerdere T33-denials; die worden zonder filtering in het module meegenomen.",
+    "correction": "Gebruik een onschuldige testfile mode 0644, zet de gewenste foutcontext expliciet (of cp --preserve=context), controleer ls -Z en filter audit-events op tijd/proces/testactie. Lees .te vóór installatie. Laat de overige SELinux-problemen eerst correct repareren.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A39",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1412,
+    "title": "SELinux-diagnose mist dependencies en gefaseerde test",
+    "problem": "Echo seed installeert geen setroubleshoot-server; sealert kan ontbreken. httpd kan eerst alleen op name_bind falen; filedenial verschijnt pas na portfix en HTTP-request. StartLimit kan herstart na eerdere servicefailures blokkeren. ausearch recent toont ook oude denials en bewijst dus niet no new denials.",
+    "correction": "Controleer auditd/audit2why/sealert vooraf of gebruik aanwezige tools. Repareer één denial, reset-failed/start, doe request, onderzoek volgende denial en begrens nieuwe audit-events tot de testperiode.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A40",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 1480,
+    "title": "Auto-update en rootless volume vereisen extra verificatie",
+    "problem": "Rootless auth.json in XDG_RUNTIME_DIR verdwijnt na reboot; dat is correct als default-locatie maar geen persistente login voor private auto-updates. De gebruikte access.redhat.com-image kan publiek zijn en die login niet nodig hebben. Volume-helper mist :Z en filesystemrechten moeten kloppen. Timeout/ARM-manifest/import-persistentie zijn niet getest.",
+    "correction": "Scheid login-oefening van de publieke container. Kies voor private auto-updates bewust een persistent authfile en configureer de updateunit daarmee. Vul/relabel named volume gecontroleerd en inspecteer de ARM-image en unit-output.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A41",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 923,
+    "title": "Netwerkantwoord stelt peer en effectieve resolutie niet volledig in",
+    "problem": "Examen 3 geeft alleen echo-config en hostname, terwijl foxtrot geen labadres krijgt uit de seed; ping kan dus niet werken zonder ontbrekende peerstap. De resolutie-uitleg schrijft een verzonnen voorbeeld hosts:-regel in plaats van de echte /etc/nsswitch.conf-regel. cp/mv-labeltheorie is alleen hetzelfde-inode binnen hetzelfde filesystem gegarandeerd.",
+    "correction": "Geef foxtrot expliciet IPv4 .22, IPv6 ::22, hostname en hosts-entry. Neem de echte hosts:-regel over. Leg bij mv vast dat cross-filesystem move kopieert en contextgedrag afzonderlijk gecontroleerd moet worden.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A42",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 800,
+    "title": "Find/archive-antwoorden slaan enkele bewijsstappen over",
+    "problem": "T8 -size +5M is een afgeronde MiB-selectie, niet exact 5 MB; -mtime +3 werkt met volledige 24-uurperioden. Oude logs met dezelfde basename kunnen elkaar bij kopiëren overschrijven. T9 schrijft alleen groottes, niet welke compressie werkelijk kleiner is. Blind aannemen bzip2 smaller voldoet niet.",
+    "correction": "Definieer MiB/MB en leeftijdsprecisie; behoud relatieve directorypaden bij kopiëren. Vergelijk stat-groottes en schrijf de werkelijke winnaar. List/extract tar zijn inhoudelijk bruikbaar, maar controleer resultaat.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A43",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA Practice Exam 1 - RHEL 10.md",
+    "line": 794,
+    "title": "Hersteltekst en rebootverificatie zijn verwarrend",
+    "problem": "De persoonlijke rd.break-notitie is geen algemene platformregel. De init=/bin/bash-route gebruikt /, niet /sysroot; dat deel is correct. Examen 2 bevat dubbel exec /sbin/init en een kapot or: sync; sync-comment. exec hervat init voor dezelfde boot; het is geen expliciete normale reboot. enforcing=0 geldt nog voor die boot.",
+    "correction": "Schrijf één herstelprocedure met mountpunt dat bij de gekozen methode hoort, relabel en vervolgens een normale reboot zonder tijdelijke args. Verifieer passwd -S root, getenforce en /proc/cmdline. Diagnoseer initramfs-consoleauth apart van het rootpassword op de disk.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "A44",
+    "severity": "FOUT",
+    "file": "RHCSA Practice Exam 3 - RHEL 10.md",
+    "line": 27,
+    "title": "Officiële examendekking en scores worden nog onjuist gesuggereerd",
+    "problem": "Headers markeren extra stof, maar examen 3 noemt skopeo en LVM-shrink EX200-gapfill en toont Pass Score 25/35; examen 1 checklist noemt real exam ~70%. De huidige officiële doelen noemen Flatpak en LV-extend, geen containerbeheer of zelfgebouwde SELinux-modules. Een eigen 35-taakrubric is niet een officiële score.",
+    "correction": "Maak één expliciete objective-mapping en markeer verdieping overal consistent. Houd 25/35 uitsluitend als eigen studiedoel; schrap claims over echte taak-aantallen en scoreverdeling zonder officiële bron.",
+    "source": "https://www.redhat.com/en/services/training/ex200-red-hat-certified-system-administrator-rhcsa-exam"
+  },
+  {
+    "id": "G01",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex1-verify.sh",
+    "line": 22,
+    "title": "Runtime-checks bewijzen geen permanente firewallregels",
+    "problem": "De check met label permanent gebruikt runtime --list-services. Ook zones/poorten worden slechts als substring gezocht. Een PASS bewijst niet permanent config, binding aan juiste NIC of bereikbaarheid vanaf peer.",
+    "correction": "Controleer runtime en --permanent elk exact, plus actieve zone/NM-binding en de dienst vanaf de andere VM. Behandel tijdelijke regels als afzonderlijke tests.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G02",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex1-verify.sh",
+    "line": 19,
+    "title": "Adres- en getalchecks geven foutpositieven",
+    "problem": "grep 192.168.100.10 accepteert .100; grep-prio 10 accepteert 110 en kan bij een ander swapdevice passen. VG extent-size grep 16 accepteert andere waarden. Diverse servicenames en poorten worden niet exact getokeniseerd.",
+    "correction": "Gebruik ip -j/nmcli, numerieke LVM-output en exact gekozen device/kolommen. Test verkeerde waarden als negatieve fixtures. De adres- en prioriteitsfout is lokaal gereproduceerd.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G03",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex1-verify.sh",
+    "line": 28,
+    "title": "Geldige syntax betekent geen correcte sudo-policy",
+    "problem": "T8 doet alleen visudo -c: een ontbrekende labregel met verder geldige sudoers geeft PASS. Andere checks kijken naar tekst, niet daadwerkelijke ACL-effective-permissions, login-umask, timerplanning of journalconfig-overrides.",
+    "correction": "Beoordeel effectieve werking en negatieve toegangstests, niet alleen bestandsbestaan/tekst. Gebruik user-login-shells voor umask en één functionele test voor iedere gevraagde permissionregel.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G04",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+    "line": 50,
+    "title": "De grader wijzigt zelf het beoordeelde systeem",
+    "problem": "Foxtrot T1 voert mount -a uit. Een mount die niet bij boot werkte kan door de grader alsnog worden gemaakt; daarop volgende checks zien dan een gerepareerde runtime. Het leest dus niet uitsluitend de situatie na boot.",
+    "correction": "Maak graders read-only: inspecteer findmnt, failed units en bootjournal; mount -a blijft een kandidaat-test in de oplossing, geen automatische beoordeling.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G05",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+    "line": 21,
+    "title": "Examen 3 drop-incheck zoekt verkeerde property",
+    "problem": "T5 zoekt systemctl show -p RestartSec, waar RestartUSec nodig is. Een correct drop-in kan hierdoor FAIL krijgen. Exact pad override.conf wordt afgedwongen terwijl de vraag een geldig drop-in kan toestaan met andere naam.",
+    "correction": "Controleer effectief Restart=on-failure, RestartUSec=30s en Description; gebruik DropInPaths als bewijs. Zet dezelfde correctie ook in de embedded grader.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G06",
+    "severity": "ONZEKER",
+    "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+    "line": 44,
+    "title": "semodule-check verwacht onjuiste volledige regel",
+    "problem": "semodule -l kan naam plus versie/andere velden tonen. grep -qx labhttpd accepteert alleen een regel die uitsluitend de naam bevat. Dit is geen robuuste test van een geïnstalleerd module.",
+    "correction": "Vergelijk het naamveld exact, bijvoorbeeld semodule -l | awk $1==\"labhttpd\"; beoordeel daarnaast de specifieke gevraagde actie. Verifieer echte Rocky-output.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G07",
+    "severity": "ONZEKER",
+    "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+    "line": 55,
+    "title": "Bind-sourcecheck matcht de verkeerde findmnt-weergave",
+    "problem": "De substringcheck srv/appdata werkt wanneer /srv/appdata onderdeel van de rootfilesystem is. Bij een afzonderlijk /srv-filesystem kan findmnt echter device[/appdata] tonen, waarna een correcte bindmount FAIL krijgt. Geen fout op jouw standaard rootindeling bewezen.",
+    "correction": "Controleer target, source filesystem-root en dezelfde inode/device van payload via beide paden; lees ook de persistente bind-entry gericht. Test met echte findmnt-output.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G08",
+    "severity": "FOUT",
+    "file": "RHCSA-Lab-Scripts/ex3-verify.sh",
+    "line": 39,
+    "title": "Tekstchecks laten niet-werkende of te ruime jobs door",
+    "problem": "at.allow-check accepteert emma naast andere toegestane users. cron-check accepteert alleen het woord emma ook in een comment. Examen 2 log-rule-check accepteert een uitcommentarieerde secure.lab. Negative pvs-pipeline kan PASS geven wanneer pvs zelf faalt.",
+    "correction": "Parse actieve entries exact en controleer tools-exitcodes. Test een tweede verboden user, ontbrekend executable, verkeerde schedule en commentregel. Zet UNKNOWN/ERROR apart van PASS/FAIL.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G09",
+    "severity": "ONVOLLEDIG",
+    "file": "RHCSA-Lab-Scripts/ex1-verify.sh",
+    "line": 79,
+    "title": "Veel opdrachten hebben geen enkele automatische check",
+    "problem": "Tellingen: examen 1 25/35 taaknummers met minstens één check; examen 2 26/35; examen 3 22/35. Dat zegt niets over complete subtaakdekking. Examen 3 beweert dat alle gevraagde antwoordfiles worden gegrade, maar de grader leest de meeste daarvan niet. Bij FAIL verschijnt bovendien geen onderliggende commandofout.",
+    "correction": "Lever een expliciete dekkingsmatrix. Toon iedere test en reden van FAIL/ERROR. Verwijder claim the grader checks that file tenzij inhoud daadwerkelijk gecontroleerd wordt.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "G10",
+    "severity": "ONVOLLEDIG",
+    "file": "tools/validate.py",
+    "line": 2,
+    "title": "De bestaande suite bevestigt vooral aannames van de implementatie",
+    "problem": "13 tests en 101 Bashfences slagen, maar mock-clone creëert zelf de gewenste destination; er is geen echte gast, CLI-foutpad per seedfase, inhoudelijke answer-coverage, opdrachtinteractie of negatieve graderwerking. De syntaxcontrole mist ongecodeerde shellfences en inner scripts worden niet afzonderlijk functioneel getest.",
+    "correction": "Behoud syntax/mocks als eerste laag. Voeg inhoudelijke kruiscontroles en negatieve graders toe, daarna echte Rocky-VM-lifecycle en end-to-end antwoorden met reboot/peerchecks. Rapporteer die lagen apart.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "H01",
+    "severity": "HISTORISCH",
+    "file": "upstream-reference/RHCSA-Lab-Scripts/rebuild-rhcsa-labs.sh",
+    "line": 16,
+    "title": "Historische KVM-rebuild is destructief en geen Fusion-route",
+    "problem": "De archive-script verwijdert zes named libvirt-domains en storage vóór nieuwe clones klaar zijn; errors worden onderdrukt. Diskhelper noemt sdb/sdc terwijl targetbus virtio is: devnaam-aanname klopt niet. Default-/multi-NIC, snapshot/seed en CD-ROM-target zijn onvoldoende gevalideerd. README heeft afwijkende 20/30 GiB, 2/4 GiB, 2.5/3 uur en een andere poolnaam.",
+    "correction": "Houd archive uitsluitend naslag. Voer deze code niet als Fusion-alternatief uit. Voor hergebruik op KVM is een eigen ownership/preflight/herstelreview nodig; platformconversie hoort geen archive-instructies als actuele stappen te tonen.",
+    "source": "Lokale broncode/tekst"
+  },
+  {
+    "id": "H02",
+    "severity": "HISTORISCH",
+    "file": "upstream-reference/RHCSA-Lab-Scripts/rhel10-dvd-download.sh",
+    "line": 3,
+    "title": "Historische downloader bevat tokenachtige voorbeelddata",
+    "problem": "Comment bevat een lange tokenachtige string. README noemt dit een scrambled placeholder; validiteit is niet vastgesteld en de string wordt hier niet herhaald. Downloader valideert de API-filename niet als basename en curl gebruikt geen HTTP-failurecontrole. De actieve Fusion-helper print alleen officiële downloadlinks.",
+    "correction": "Verwijder tokenachtige voorbeelddata uit een publiceerbare archivekopie en gebruik env-input. Valideer HTTPS, basename en API-schema en HTTP-status; voer een oude downloader niet blind uit. Is het een echte token, dan hoort de eigenaar hem in te trekken.",
+    "source": "Lokale broncode/tekst"
+  }
+]

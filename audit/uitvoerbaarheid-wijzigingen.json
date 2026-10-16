@@ -1,0 +1,127 @@
+[
+  [
+    3,
+    "vi-f /etc/sudoers.d/lab3_defaults",
+    "visudo -f /etc/sudoers.d/lab3_defaults"
+  ],
+  [
+    3,
+    "vi-cf /etc/sudoers.d/lab3_defaults\n-l -U emma",
+    "chmod 440 /etc/sudoers.d/lab3_defaults\nvisudo -cf /etc/sudoers.d/lab3_defaults\nvisudo -c\nsudo -l -U emma"
+  ],
+  [
+    3,
+    "Editing with `vi-f`",
+    "Editing with `visudo -f`"
+  ],
+  [
+    3,
+    "-u emma touch /srv/shared/data/test.txt",
+    "runuser -u emma -- touch /srv/shared/data/test.txt"
+  ],
+  [
+    3,
+    "journalctl _COMM=                                  > /root/j4.txt",
+    "journalctl --no-pager _COMM=sudo > /root/j4.txt"
+  ],
+  [
+    3,
+    "A /etc/cron.d file has SIX time/command fields plus a USER field:",
+    "A /etc/cron.d file has five time fields, then a USER field and a command:"
+  ],
+  [
+    3,
+    "systemctl enable --now atd\n",
+    "systemctl enable --now atd crond\n"
+  ],
+  [
+    3,
+    "swapon --show=NAME,TYPE,SIZE,PRIO > /root/swap_before.txt\nfree -h >> /root/swap_before.txt\nread -r -p",
+    "swapon --show=NAME,TYPE,SIZE,PRIO > /root/swap_before.txt\nfree -h >> /root/swap_before.txt\ncat /root/swap_before.txt\n# Kies de oorspronkelij"
+  ],
+  [
+    3,
+    "XFS cannot be shrunk at all - the filesystem supports online growth only.",
+    "De ondersteunde XFS-procedure in deze Rocky-labomgeving is online groeien.\nGebruik geen lvreduce op een bestaand XFS-filesysteem."
+  ],
+  [
+    3,
+    "dnf install -y podman\n",
+    "dnf install -y podman skopeo\n"
+  ],
+  [
+    2,
+    "vim /etc/default/grub",
+    "vi /etc/default/grub"
+  ],
+  [
+    2,
+    "*) echo 'Invalid action' >&2; exit 2;;",
+    "*) echo \"Usage: $0 {start|stop|restart|status|check} service\" >&2; exit 2;;"
+  ],
+  [
+    2,
+    "dd if=/dev/zero of=/dev/shm/memtest bs=1M count=800 &\n# or: stress-ng --vm 1 --vm-bytes 800M --timeout 60s &\nfree -h\nrm -f /dev/shm/memtest ",
+    "dd if=/dev/zero of=/dev/shm/memtest bs=1M count=800 &\nMEM_PID=$!\nwait \"$MEM_PID\"\nfree -h\nrm -f /dev/shm/memtest\nfree -h"
+  ],
+  [
+    1,
+    "# Part B\nflatpak --system remotes",
+    "# Part B: eerst het ontbrekende programma installeren. Internet vereist.\ndnf install -y flatpak\nflatpak --system remotes"
+  ],
+  [
+    1,
+    "# using * with expands as the user not root and returns nothing.  \n# Use bash -c to start a root shell to run the command to see the proper ",
+    "rpm -K /root/downloads/nmap-*.rpm\n# NOKEY betekent: ondertekeningssleutel ontbreekt; dit is geen bewezen geldige handtekening."
+  ],
+  [
+    1,
+    "<swap code> # Or use GUID 0657FD6D-A4AB-43C4-84E5-0933C84B4F4F",
+    "0657FD6D-A4AB-43C4-84E5-0933C84B4F4F # Volledige Linux-swap-type-GUID"
+  ],
+  [
+    1,
+    "T4",
+    "sectie herschreven"
+  ],
+  [
+    2,
+    "T4",
+    "sectie herschreven"
+  ],
+  [
+    3,
+    "T15",
+    "sectie herschreven"
+  ],
+  [
+    1,
+    "T2",
+    "sectie herschreven"
+  ],
+  [
+    3,
+    "T16",
+    "sectie herschreven"
+  ],
+  [
+    3,
+    "# foxtrot (server)",
+    "# foxtrot (server)"
+  ],
+  [
+    3,
+    "# echo (client)\nsed",
+    "```\n\nUitsluitend op **echo**, root:\n```bash\nsed"
+  ],
+  [
+    3,
+    "# foxtrot (server)\n",
+    ""
+  ],
+  [
+    3,
+    "**VM: both. Uitvoering: rootconsole, behalve blokken die expliciet een gewone gebruiker noemen.**\n\n```bash",
+    "**VM: beide. Uitvoering: rootconsole.**\n\nUitsluitend op **foxtrot**, root:\n```bash"
+  ]
+]

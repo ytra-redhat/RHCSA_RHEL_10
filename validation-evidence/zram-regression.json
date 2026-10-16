@@ -1,0 +1,27 @@
+{
+  "observed_installer_devices": [
+    {
+      "name": "loop0",
+      "type": "loop"
+    },
+    {
+      "name": "sr0",
+      "type": "rom"
+    },
+    {
+      "name": "zram0",
+      "type": "disk"
+    },
+    {
+      "name": "nvme0n1",
+      "type": "disk",
+      "size_GiB": 30
+    }
+  ],
+  "previous_disk_count": 2,
+  "correct_install_disk": "nvme0n1",
+  "ram_devices_excluded": "^zram[0-9]+$",
+  "matching_fixture_guard_passes": true,
+  "additional_hardware_disk_refused": true,
+  "live_installation_completed": false
+}

@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-09",
+  "guest": "Rocky Linux 10.2 aarch64",
+  "sudo_denial_observed": true,
+  "sudo_list_exit_status": 0,
+  "guest_sudo_check_repaired": true,
+  "sudo_check_passed": true,
+  "dbus_directory_missing_observed": true,
+  "dbus_directory_created": true,
+  "current_console_prompt": "cp: overwrite '/etc/machine-id'?",
+  "golden_poweroff_confirmed": false,
+  "all_exam_tasks_live_tested": false
+}

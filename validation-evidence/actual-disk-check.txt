@@ -1,0 +1,7 @@
+Datum: 2026-10-09
+Fusion vmware-vdiskmanager build: 25689522
+Actie: nieuwe afzonderlijke 1 GiB thin disk (-c -s 1GB -a lsilogic -t 0).
+Resultaat: Virtual disk creation successful.
+Controller validate_vmdk(..., 1): PASS, echte -e ketencontrole en descriptorcapaciteit.
+Geen bestaande VM-disks gebruikt of gewijzigd. Geen echte VM-clone, seed, snapshot of reset getest.
+De binaire fixture is uitgesloten van de release-ZIP.
